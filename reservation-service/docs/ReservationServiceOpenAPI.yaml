@@ -1,0 +1,325 @@
+openapi: 3.0.3
+info:
+  title: Reservation Service
+  description: Dokumentacja serwisu do zarządzania rezerwacjami
+  version: 1.0.0
+servers:
+  - url: 'http://reservation-service:4003'
+paths:
+  /reservation:
+    get:
+      description: Zwraca wszystkie rezerwacje
+      parameters:
+        - $ref: "#/components/schemas/Pagination"
+        - $ref: "#/components/schemas/Limit"
+        - in: query
+          name: userId
+          description: Id użytkownika, którego rezerwacje szukamy
+          schema:
+            type: string
+        - in: query
+          name: roomId
+          description: Id pokoju, którego dotyczy rezerwacja
+          schema:
+            type: string
+        - in: query
+          name: status
+          description: Filtrowanie po statusie
+          schema:
+            type: string
+            enum: [ reserved, ended ]
+        - in: query
+          name: startAt
+          description: Data rozpoczęcia rezerwacji
+          schema:
+            $ref: "#/components/schemas/Date"
+        - in: query
+          name: endAt
+          description: Data zakończenia rezerwacji
+          schema:
+            $ref: "#/components/schemas/Date"
+      responses:
+        200:
+          description: Zwrócono listę rezerwacji
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOfReservations"
+        403:
+          $ref: "#/components/responses/Forbidden"
+    post:
+      description: Dodaje nową rezerwację
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reservation:
+                  $ref: "#/components/schemas/Reservation"
+                paymentData:
+                  $ref: "#/components/schemas/PaymentData"
+      responses:
+        201:
+          description: Rezerwacja dodana
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservationId:
+                    type: string
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        409:
+          description: Pokój już jest zarezerwowany w tym dniu
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /reservation/{reservationId}:
+    get:
+      description: Zwraca informację o konkretnej rezerwacji
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+      responses:
+        200:
+          description: Rezerwacja zwrócona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reservation"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    put:
+      description: Edytuje konkretną rezerwację
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Reservation"
+      responses:
+        200:
+          description: Rezerwacja zmieniona
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    delete:
+      description: Usuwa konkretną rezerwację
+      responses:
+        200:
+          description: Rezerwacja usunięta
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /reservation/{reservationId}/issue:
+    get:
+      description: Zwraca wszystkie zgłoszone problemy z rezerwacją
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+      responses:
+        200:
+          description: Problemy zwrócone
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  issues:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReservationIssue"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    post:
+      description: Tworzy nowy problem z rezerwacją
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReservationIssue"
+      responses:
+        200:
+          description: Problem stworzony
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservationTopic:
+                    type: string
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    put:
+      description: Zmienia status rezerwacji
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [ resolved, ongoing ]
+      responses:
+        200:
+          description: Status zmieniony
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /reservation/{reservationId}/issue/{issueId}:
+    get:
+      description: Zwraca konkretny problem z rezerwacją
+    post:
+      description: Wysyła nową wiadomość
+components:
+  responses:
+    Forbidden:
+      description: Brak uprawnień
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenericError"
+  parameters:
+    Limit:
+      in: query
+      name: limit
+      description: Limit zwracanych wartości
+      schema:
+        type: number
+    Offset:
+      in: query
+      name: offset
+      description: Offset zwracanych wartości
+      schema:
+        type: number
+  schemas:
+    ReservationIssue:
+      type: object
+      properties:
+        reservationId:
+          type: string
+        issueTopic:
+          type: string
+        status:
+          type: string
+          enum: [ resolved, ongoing ]
+    PaymentData:
+      type: object
+      properties:
+        cardNumber:
+          type: string
+        CVV:
+          type: string
+        validTill:
+          type: string
+    TotalPrice:
+      type: number
+    ReservationStatus:
+      type: string
+      enum: [ reserved, ended ]
+    Reservation:
+      type: object
+      properties:
+        userId:
+          type: string
+        roomId:
+          type: string
+        startAt:
+          $ref: "#/components/schemas/Date"
+        endAt:
+          $ref: "#/components/schemas/Date"
+    ListOfReservations:
+      type: object
+      properties:
+        reservations:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Reservation"
+              - $ref: "#/components/schemas/ReservationStatus"
+              - $ref: "#/components/schemas/TotalPrice"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    Pagination:
+      required: [ count, offset, limit ]
+      type: object
+      properties:
+        count:
+          description: Ilość możliwych wartości
+          type: number
+        offset:
+          description: Początkowy index zwracanych wartości
+          type: number
+        limit:
+          description: Ilość wartości
+          type: number
+    Date:
+      type: string
+      pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+      example: "2019-05-17"
+    GenericError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+

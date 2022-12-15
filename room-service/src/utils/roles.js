@@ -1,6 +1,6 @@
 const ROLES = {
     USER: 0,
-    LIBRARIAN: 1,
+    EMPLOYEE: 1,
     ADMIN: 2
 }
 

@@ -9,7 +9,7 @@ import express from "express";
 
     const app = express();
 
-    app.use("/", router);
+    app.use("/reservation", router);
 
     app.listen(port, async () => {
         console.log(`Microservice ${process.env.NAME} running on port ${port}`);

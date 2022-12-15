@@ -6,29 +6,17 @@
  */
 
 export const services = {
-    auth: {
-        name: process.env.AUTH_NAME,
-        port: process.env.AUTH_PORT
-    },
     user: {
         name: process.env.USER_NAME,
         port: process.env.USER_PORT
     },
-    book: {
-        name: process.env.BOOK_NAME,
-        port: process.env.BOOK_PORT
+    room: {
+        name: process.env.ROOM_NAME,
+        port: process.env.ROOM_PORT
     },
     reservation: {
         name: process.env.RESERVATION_NAME,
         port: process.env.RESERVATION_PORT
-    },
-    borrowing: {
-        name: process.env.BORROWING_NAME,
-        port: process.env.BORROWING_PORT
-    },
-    notification: {
-        name: process.env.NOTIFICATION_NAME,
-        port: process.env.NOTIFICATION_PORT
     },
 }
 

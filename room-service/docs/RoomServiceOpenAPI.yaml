@@ -1,0 +1,368 @@
+openapi: 3.0.3
+info:
+  title: Room Service
+  description: Dokumentacja serwisu do zarządzania pokojami
+  version: 1.0.0
+servers:
+  - url: 'http://room-service:4002'
+tags:
+  - name: Pokój
+  - name: Rodzaj pokoju
+paths:
+  /room:
+    get:
+      tags:
+        - Pokój
+      description: Zwraca wszystkie pokoje
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - in: query
+          name: isReserved
+          description: Filtr statusu pokoju (Tylko pracownik i administrator mogą użyć innych wartości niż "any")
+          schema:
+            type: string
+            enum: [ reserved, free, any ]
+        - in: query
+          name: freeFrom
+          description: Data od której pokój musi być wolny
+          schema:
+            $ref: "#/components/schemas/Date"
+        - in: query
+          name: freeTo
+          description: Data do której pokój musi być wolny
+          schema:
+            $ref: "#/components/schemas/Date"
+        - in: query
+          name: capacity
+          description: Ile osób musi pomieścić pokój
+          schema:
+            type: number
+        - in: query
+          name: sort
+          description: Sortowanie pokoi
+          schema:
+            type: string
+            enum: [ priceAsc, priceDesc ]
+      responses:
+        200:
+          description: Zwrócono listę pokoi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOfRooms"
+        403:
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - Pokój
+      description: Dodaje pokój
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Room"
+                - type: object
+                  properties:
+                    roomTypeId:
+                      type: string
+      responses:
+        201:
+          description: Pokój dodany
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Id"
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        409:
+          description: Pokój o takim numerze pokoju istnieje
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /room/{roomId}:
+    get:
+      parameters:
+        - in: path
+          name: roomId
+          description: Id pokoju
+          schema:
+            type: string
+      tags:
+        - Pokój
+      description: Zwraca pokój o podanym ID
+      responses:
+        200:
+          description: Pokój zwrócony
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Id"
+                  - $ref: "#/components/schemas/Room"
+                  - $ref: "#/components/schemas/RoomType"
+                  - $ref: "#/components/schemas/RoomTypeDescription"
+        404:
+          description: Pokój nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    put:
+      parameters:
+        - in: path
+          name: roomId
+          description: Id pokoju
+          schema:
+            type: string
+      tags:
+        - Pokój
+      description: Zmienia dane pokoju
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Room"
+                - type: object
+                  properties:
+                    roomTypeId:
+                      type: string
+      responses:
+        200:
+          description: Dane pokoju zmienione
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Pokój nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        409:
+          description: Pokój o takim numerze pokoju istnieje
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /room/type:
+    get:
+      tags:
+        - Rodzaj pokoju
+      description: Zwraca wszystkie rodzaje pokojów
+      responses:
+        200:
+          description: Rodzaje pokojów zwrócone
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOfRoomTypes"
+        403:
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - Rodzaj pokoju
+      description: Dodaje rodzaj pokoju
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomType"
+      responses:
+        201:
+          description: Rodzaj pokoju dodany
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roomTypeId:
+                    $ref: "#/components/schemas/Id"
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        409:
+          description: Pokój o takiej nazwie pokoju istnieje
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /room/type/{typeId}:
+    get:
+      tags:
+        - Rodzaj pokoju
+      parameters:
+        - in: path
+          name: typeId
+          description: Id rodzaju pokoju
+          schema:
+            type: string
+      description: Zwraca konkretny rodzaj pokoju
+      responses:
+        200:
+          description: Zwrócono rodzaj pokoju
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Id"
+                  - $ref: "#/components/schemas/RoomType"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rodzaj pokoju nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    put:
+      tags:
+        - Rodzaj pokoju
+      parameters:
+        - in: path
+          name: typeId
+          description: Id rodzaju pokoju
+          schema:
+            type: string
+      description: Zmienia dane rodzaju pokoju
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomType"
+      responses:
+        200:
+          description: Rodzaj pokoju zmieniony
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rodzaj pokoju nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+components:
+  responses:
+    Forbidden:
+      description: Brak uprawnień
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenericError"
+  parameters:
+    Limit:
+      in: query
+      name: limit
+      description: Limit zwracanych wartości
+      schema:
+        type: number
+    Offset:
+      in: query
+      name: offset
+      description: Offset zwracanych wartości
+      schema:
+        type: number
+  schemas:
+    Id:
+      required: [_id]
+      type: object
+      properties:
+        _id:
+          type: string
+    Room:
+      required: [roomNumber, floor]
+      type: object
+      properties:
+        roomNumber:
+          type: number
+        floor:
+          type: number
+    RoomType:
+      required: [name, capacity, price]
+      type: object
+      properties:
+        name:
+          type: string
+        capacity:
+          type: number
+        price:
+          type: number
+    RoomTypeDescription:
+      required: [description]
+      type: object
+      properties:
+        description:
+          type: string
+    ListOfRoomTypes:
+      type: object
+      properties:
+        roomTypes:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Id"
+              - $ref: "#/components/schemas/RoomType"
+              - $ref: "#/components/schemas/RoomTypeDescription"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    ListOfRooms:
+      required: [rooms, pagination]
+      type: object
+      properties:
+        rooms:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Room"
+              - $ref: "#/components/schemas/RoomType"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    Pagination:
+      required: [count, offset, limit]
+      type: object
+      properties:
+        count:
+          description: Ilość możliwych wartości
+          type: number
+        offset:
+          description: Początkowy index zwracanych wartości
+          type: number
+        limit:
+          description: Ilość wartości
+          type: number
+    Date:
+      type: string
+      pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+      example: "2019-05-17"
+    GenericError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string

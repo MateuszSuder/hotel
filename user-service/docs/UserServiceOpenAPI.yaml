@@ -1,0 +1,24 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'http://user-service:4001'
+paths:
+  /user:
+    get:
+      description: Zwraca wszystkich użytkowników
+    post:
+      description: Tworzy nowego użytkownika
+  /user/{id}:
+    get:
+      description: Zwraca użytkownika o podanym ID
+    put:
+      description: Edytuje użytkownika
+    delete:
+      description: Usuwa użytkownika
+  /user/{id}/block:
+    post:
+      description: Blokuje użytkownika
+
