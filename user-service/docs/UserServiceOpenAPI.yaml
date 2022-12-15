@@ -1,24 +1,278 @@
 openapi: 3.0.3
 info:
-  title: Title
-  description: Title
+  title: User Service
+  description: Dokumentacja serwisu użytkownika
   version: 1.0.0
 servers:
-  - url: 'http://user-service:4001'
+  - url: 'http://user-service:4001/'
 paths:
   /user:
     get:
-      description: Zwraca wszystkich użytkowników
+      description: Zwraca wszystkich użytkowników (tylko dla ADMIN i EMPLOYEE)
+      parameters:
+        - in: query
+          name: offset
+          description: Offset
+          required: true
+          schema:
+            type: number  
+        - in: query
+          name: limit
+          description: Limit
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: roleFilter
+          description: Filtrowanie użytkowników po roli
+          schema:
+            $ref: "#/components/schemas/UserRoleFilter"    
+        - in: query
+          name: sort
+          description: Sortowanie
+          schema:
+            $ref: "#/components/schemas/UserSort"     
+      responses:
+        200:
+          description: Zwrócono listę użytkowników
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOfUsers"
+        403:
+          $ref: "#/components/responses/Forbidden"
     post:
       description: Tworzy nowego użytkownika
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserWithPassword"
+      responses:
+        201:
+          description: Użytkownik stworzony
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+        403:
+          $ref: "#/components/responses/Forbidden"
   /user/{id}:
     get:
       description: Zwraca użytkownika o podanym ID
+      parameters:
+        - in: path
+          name: id
+          description: Id użytkownika
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Użytkownik znaleziony
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/UserWithRole"       
+        403:
+          $ref: "#/components/responses/Forbidden"         
     put:
       description: Edytuje użytkownika
+      parameters:
+        - in: path
+          name: id
+          description: Id użytkownika
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/UserWithId"
+      responses:
+        200:
+          description: Użytkownik zmodyfikowany
+        403:
+          $ref: "#/components/responses/Forbidden"                       
     delete:
       description: Usuwa użytkownika
+      parameters:
+        - in: path
+          name: id
+          description: Id użytkownika
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Uzytkownik usunięty
+        403:
+          $ref: "#/components/responses/Forbidden"
   /user/{id}/block:
     post:
       description: Blokuje użytkownika
-
+      parameters:
+        - in: path
+          name: id
+          description: Id użytkownika
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Uzytkownik zablokowany
+        404:
+          description: Użytkownik nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+  /user/{id}/changePassword:
+    put: 
+      description: Zmiana hasła użyutkownika
+      parameters:
+        - in: path
+          name: id
+          description: Id Uzytkownik
+          required: true
+          schema: 
+            type: string    
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string  
+      responses:
+        200:
+          description: Hasło zostało zmienione
+        403:
+          $ref: "#/components/responses/Forbidden"           
+components:
+  responses:
+    Forbidden:
+      description: Brak uprawnień
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenericError"
+  schemas:
+    UserWithId:
+      required:
+        - _id
+      allOf:
+        - $ref: "#/components/schemas/User"
+      properties:
+        _id: 
+          description: Id użytkownika
+          type: string    
+    User:
+      required:
+        - email
+        - name
+        - lastName
+        - dateOfBirth
+        - address
+        - phoneNumber
+      type: object
+      properties:
+        email:  
+          type: string
+        name:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+          example: "2019-05-17"
+        address:
+          $ref: "#/components/schemas/Address"
+        phoneNumber:
+          type: string
+    Address:
+      type: object
+      properties:
+        city:
+          type: string
+        street:
+          type: string
+        postal:
+          type: string
+        houseNumber:
+          type: string
+        apartmentNumber:
+          type: string   
+    UserWithPassword:
+      required:
+       - password
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - properties:
+            password:
+              description: Zaszyfrowane hasło
+              type: string
+    UserWithRole:
+      required:
+        - role
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - properties:
+            role:
+              type: string  
+              enum:
+                - USER
+                - EMPLOYEE
+                - ADMIN    
+    ListOfUsers:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserWithRole"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    Pagination:
+      required: [ count, offset, limit ]
+      type: object
+      properties:
+        count:
+          description: Ilość możliwych wartości
+          type: number
+        offset:
+          description: Początkowy index zwracanych wartości
+          type: number
+        limit:
+          description: Ilość wartości
+          type: number               
+    UserRoleFilter:
+      type: string
+      enum: [ADMIN, EMPLOYEE, USER]      
+    GenericError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+    UserSort:
+      type: string
+      enum: [emailAsc, emailDesc]
+      description: >
+        Sort order:
+         * `emailAsc` - Email rosnąco, od A do Z
+         * `emailDesc` - Email malejąco, od Z do A
