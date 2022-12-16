@@ -10,8 +10,8 @@ paths:
     get:
       description: Zwraca wszystkie rezerwacje
       parameters:
-        - $ref: "#/components/schemas/Pagination"
-        - $ref: "#/components/schemas/Limit"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
         - in: query
           name: userId
           description: Id użytkownika, którego rezerwacje szukamy
@@ -90,6 +90,7 @@ paths:
           description: Id rezerwacji
           schema:
             type: string
+          required: true  
       responses:
         200:
           description: Rezerwacja zwrócona
@@ -113,6 +114,7 @@ paths:
           description: Id rezerwacji
           schema:
             type: string
+          required: true    
       requestBody:
         content:
           application/json:
