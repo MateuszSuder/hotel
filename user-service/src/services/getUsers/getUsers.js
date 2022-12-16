@@ -1,6 +1,10 @@
 import User from "../../schemas/User.js";
 import mongooseErrorResponse from "../../utils/mongooseErrorResponse.js";
-import genericErrorResponse from "../../utils/genericErrorResponse.js";
+
+const userSort = {
+    emailAsc: 1,
+    emailDesc: -1
+}
 
 /**
  * @param {e.Request} req
@@ -8,17 +12,25 @@ import genericErrorResponse from "../../utils/genericErrorResponse.js";
  */
 export default async (req, res) => {
     // todo 403 implementation
-    const { userId } = req.params;
+    const { offset, limit, roleFilter, sort } = req.query;
+
+    // Sort
+    let s = 1;
+
+    if(sort && sort === userSort.emailDesc) {
+        s = -1;
+    }
 
     try {
-        const query = User.findOne({ _id: userId });
-
-        query.exec(async (err, user) => {
+        let query = User
+            .find(roleFilter && { role: roleFilter  })
+            .sort({ email: s })
+            .skip(offset)
+            .limit(limit);
+        query.exec((err, users) => {
             if(err) return mongooseErrorResponse(res, err);
 
-            if(!user) genericErrorResponse(res, "Not found", 404);
-
-            return res.status(200).send(user);
+            return res.status(200).send(users);
         })
     } catch (e) {
         return mongooseErrorResponse(res, e);

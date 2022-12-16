@@ -1,7 +1,7 @@
 import encrypt from 'mongoose-encryption';
 
-const encKey = "p7HYaoZZucDcpphz7GLp+6F/JxwbVqm+J6eeJqWsV+0=";
-const sigKey = "8oR3fCZleSrb4LfRxXAcnVieWPSNZ1lIxA7V6zriSwLtlkIjfpAm3h+8NA/2Dz/qAh9RlmXngGhEbjzefTHQCQ=="
+const encKey = process.env.ENC_KEY;
+const sigKey = process.env.SIG_KEY;
 
 /**
  * @param {mongoose.Schema} schema
