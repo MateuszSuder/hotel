@@ -1,11 +1,9 @@
 import express from "express";
+import getUser from "../../../services/getUser/getUser.js";
 
 const router = express.Router({ mergeParams: true });
 
-router.get("", async (req, res) => {
-    console.log(req.params);
-    res.send(`User Id Get: ${req.params.userId}`);
-});
+router.get("", getUser);
 
 router.put("", async (req, res) => {
     res.send("User Id Put");

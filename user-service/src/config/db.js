@@ -7,7 +7,8 @@ const connectDb = () => {
         mongoose.connect(url, {
             user: process.env.DB_USERNAME,
             pass: process.env.DB_PASSWORD,
-            authSource: "admin"
+            authSource: "admin",
+            monitorCommands: true
         }, (error) => {
             if(error) {
                 console.error("error", error)
