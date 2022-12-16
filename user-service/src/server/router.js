@@ -13,7 +13,7 @@ app.use((req, res, next) => {
 })
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const folderRegex = new RegExp(/^{?\w+[^.]}?$/);
+const folderRegex = new RegExp(/^{?[\w|-]+[^.]}?$/);
 const fileRegex = new RegExp(/\w+.js/);
 
 const slicePath = (path, search) => {
