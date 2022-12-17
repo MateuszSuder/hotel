@@ -1,5 +1,5 @@
-import mongooseErrorResponse from "../../utils/mongooseErrorResponse.js";
-import RoomType from "../../schemas/RoomType.js";
+import mongooseErrorResponse from "../../../utils/mongooseErrorResponse.js";
+import RoomType from "../../../schemas/RoomType.js";
 
 /**
  * @param {e.Request} req

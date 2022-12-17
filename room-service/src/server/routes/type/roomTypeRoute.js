@@ -1,9 +1,9 @@
 import express from "express";
-import createRoomType from "../../../services/createRoomType/createRoomType.js";
-import getRooms from "../../../services/getRoomTypes/getRoomTypes.js";
+import createRoomType from "../../../services/roomType/createRoomType/createRoomType.js";
+import getRoomTypes from "../../../services/roomType/getRoomTypes/getRoomTypes.js";
 const router = express.Router();
 
-router.get("", getRooms);
+router.get("", getRoomTypes);
 
 router.post("", createRoomType);
 
