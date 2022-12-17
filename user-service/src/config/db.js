@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const url = `mongodb://${process.env.DB_CONTAINER_NAME}:${process.env.DB_PORT}/${process.env.NAME}`;
+const url = `mongodb://${process.env.DB_CONTAINER_NAME}:${process.env.DB_PORT}/hotel`;
 
 const connectDb = () => {
     try {
