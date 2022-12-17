@@ -68,6 +68,6 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-encryptSchema(userSchema, ['isDeleted', 'isBlocked']);
+encryptSchema(userSchema, ['password', 'isDeleted', 'isBlocked']);
 
 export default mongoose.model("User", userSchema);
