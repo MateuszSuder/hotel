@@ -1,11 +1,10 @@
+import RoomType from "../../schemas/RoomType.js";
+import mongooseErrorResponse from "../../utils/mongooseErrorResponse.js";
+
 /**
  * @param {e.Request} req
  * @param {e.Response} res
  */
-import genericErrorResponse from "../../utils/genericErrorResponse.js";
-import RoomType from "../../schemas/RoomType.js";
-import mongooseErrorResponse from "../../utils/mongooseErrorResponse.js";
-
 export default async (req, res) => {
     const { name, description, capacity, price } = req.body;
 
@@ -16,8 +15,9 @@ export default async (req, res) => {
 
         const t = await roomType.save();
 
-        console.log(t);
-        res.status(200).send(null);
+        res.status(201).json({
+            id: t.id
+        });
     } catch (e) {
         return mongooseErrorResponse(res, e);
     }
