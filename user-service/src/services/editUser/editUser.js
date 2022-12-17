@@ -16,7 +16,9 @@ export default async (req, res) => {
 
             if(!user) return genericErrorResponse(res, "Not found", 404);
 
-            const newUser = new User(Object.assign(user, req.body));
+            const { name, lastName, dateOfBirth, address } = req.body;
+
+            const newUser = new User(Object.assign(user, { name, lastName, dateOfBirth, address }));
             await newUser.save();
             res.status(200).send(null);
         })
