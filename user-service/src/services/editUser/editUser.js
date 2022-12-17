@@ -18,11 +18,9 @@ export default async (req, res) => {
 
             const newUser = new User(Object.assign(user, req.body));
             await newUser.save();
+            res.status(200).send(null);
         })
-
-        res.status(200).send(null);
     } catch (e) {
-        console.log(e);
         return mongooseErrorResponse(res, e);
     }
 }

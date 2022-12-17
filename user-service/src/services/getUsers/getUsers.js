@@ -22,16 +22,28 @@ export default async (req, res) => {
     }
 
     try {
-        let query = User
-            .find(roleFilter && { role: roleFilter  })
+        let query = roleFilter && { role: roleFilter };
+        User.find(query)
             .sort({ email: s })
-            .skip(offset)
-            .limit(limit);
-        query.exec((err, users) => {
-            if(err) return mongooseErrorResponse(res, err);
+            .skip(offset || 0)
+            .limit(limit || 10)
+            .exec((err, users) => {
+                if(err) return mongooseErrorResponse(res, err);
 
-            return res.status(200).send(users);
-        })
+                User.countDocuments(query)
+                    .exec((countError, count) => {
+                        if(countError)  return mongooseErrorResponse(res, countError);
+
+                        return res.status(200).json({
+                            users,
+                            pagination: {
+                                offset: offset ? parseInt(offset) : 0,
+                                limit: limit ? parseInt(limit) : 0,
+                                count
+                            }
+                        });
+                    })
+            })
     } catch (e) {
         return mongooseErrorResponse(res, e);
     }

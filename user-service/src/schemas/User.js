@@ -48,14 +48,26 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
+    address: {
+        type: addressSchema,
+        required: true
+    },
     role: {
         required: true,
         enum: ['USER', 'EMPLOYEE', 'ADMIN'],
         type: String,
         index: true
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false
     }
 });
 
-encryptSchema(userSchema);
+encryptSchema(userSchema, ['isDeleted', 'isBlocked']);
 
 export default mongoose.model("User", userSchema);

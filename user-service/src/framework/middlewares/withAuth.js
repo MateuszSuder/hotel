@@ -12,7 +12,7 @@ import ROLES from "../../utils/roles.js";
  * @param {null | Role} [options.role=null] Role to be required to be possible to access resource
  * @return {(function(e.Request, e.Response, e.NextFunction): void)|*}
  */
-const withAuth = (options= {
+const withAuth = (options = {
     role: null
 }) => {
     return async (req, res, next) => {
