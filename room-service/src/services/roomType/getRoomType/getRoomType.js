@@ -1,11 +1,11 @@
-/**
- * @param {e.Request} req
- * @param {e.Response} res
- */
 import mongooseErrorResponse from "../../../utils/mongooseErrorResponse.js";
 import RoomType from "../../../schemas/RoomType.js";
 import genericErrorResponse from "../../../utils/genericErrorResponse.js";
 
+/**
+ * @param {e.Request} req
+ * @param {e.Response} res
+ */
 export default async (req, res) => {
     const { typeId } = req.params;
 
