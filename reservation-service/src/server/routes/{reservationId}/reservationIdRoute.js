@@ -1,0 +1,18 @@
+import express from "express";
+
+const router = express.Router();
+
+router.get("", (req, res) => {
+    res.status(501).send(null);
+});
+
+router.put("", (req, res) => {
+    res.status(501).send(null);
+});
+
+router.delete("", (req, res) => {
+    res.status(501).send(null);
+});
+
+
+export default router;
