@@ -14,7 +14,6 @@ export default async (req, res) => {
 
         res.status(201).json({ id: t.id });
     } catch (e) {
-        console.log(e.errors.roomTypeId);
         return mongooseErrorResponse(res, e);
     }
 };
