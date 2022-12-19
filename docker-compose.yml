@@ -17,7 +17,7 @@ services:
       - ${GATEWAY_PORT}:${GATEWAY_PORT}
     volumes:
       - ./${GATEWAY_NAME}:/${GATEWAY_NAME}
-      - ./${GATEWAY_NAME}/node_modules:/${GATEWAY_NAME}/node_modules
+      - /${GATEWAY_NAME}/node_modules
     depends_on:
       - mongo
   user-service:
@@ -38,7 +38,7 @@ services:
       - 127.0.0.1:${USER_PORT}:${USER_PORT}
     volumes:
       - ./${USER_NAME}:/${USER_NAME}
-      - ./${USER_NAME}/node_modules:/${USER_NAME}/node_modules
+      - /${USER_NAME}/node_modules
     depends_on:
       - mongo
   room-service:
@@ -59,7 +59,7 @@ services:
       - 127.0.0.1:${ROOM_PORT}:${ROOM_PORT}
     volumes:
       - ./${ROOM_NAME}:/${ROOM_NAME}
-      - ./${ROOM_NAME}/node_modules:/${ROOM_NAME}/node_modules
+      - /${ROOM_NAME}/node_modules
     depends_on:
       - mongo
   reservation-service:
@@ -80,7 +80,7 @@ services:
       - 127.0.0.1:${RESERVATION_PORT}:${RESERVATION_PORT}
     volumes:
       - ./${RESERVATION_NAME}:/${RESERVATION_NAME}
-      - ./${RESERVATION_NAME}/node_modules:/${RESERVATION_NAME}/node_modules
+      - /${RESERVATION_NAME}/node_modules
     depends_on:
       - mongo
   mongo:
