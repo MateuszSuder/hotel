@@ -153,6 +153,7 @@ paths:
           description: Id rezerwacji
           schema:
             type: string
+          required: true
       responses:
         200:
           description: Problemy zwrócone
@@ -181,6 +182,7 @@ paths:
           description: Id rezerwacji
           schema:
             type: string
+          required: true
       requestBody:
         content:
           application/json:
@@ -229,8 +231,70 @@ paths:
   /reservation/{reservationId}/issue/{issueId}:
     get:
       description: Zwraca konkretny problem z rezerwacją
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema: 
+            type: string
+          required: true
+        - in: path
+          name: issueId
+          description: Id problemu
+          schema: 
+            type: string
+          required: true
+      responses:
+         200:
+          description: Problem zwrócony
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  issues:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReservationIssue" 
+          403:
+          $ref: "#/components/responses/Forbidden"
+          404:
+            description: Rezerwacja lub problem nieznaleziony
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/GenericError"
     post:
       description: Wysyła nową wiadomość
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema: 
+            type: string
+          required: true
+        - in: path
+          name: issueId
+          description: Id problemu
+          schema: 
+            type: string
+          required: true
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservationIssue"
+      responses:
+        200:
+          description: Wiadomość wysłana porpawnie
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja lub problem nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"            
 components:
   responses:
     Forbidden:
