@@ -9,6 +9,7 @@ const RoomSchema = new mongoose.Schema({
     roomNumber: {
         required: true,
         type: Number,
+        unique: true,
     },
     floor: {
         required: true,
