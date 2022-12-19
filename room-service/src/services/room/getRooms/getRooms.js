@@ -1,8 +1,8 @@
 import Room from "../../../schemas/Room.js";
 import mongooseErrorResponse from "../../../utils/mongooseErrorResponse.js";
 const roomSort = {
-    priceAsc: 1,
-    priceDesc: -1,
+    priceAsc: "priceAsc",
+    priceDesc: "priceDesc",
 };
 /**
  * @param {e.Request} req
@@ -16,29 +16,72 @@ export default async (req, res) => {
         s = -1;
     }
     try {
-        Room.find()
-            .populate("roomType", "name description capacity price", {
-                sort: { price: s },
-            })
-            .skip(offset || 0)
-            .limit(limit || 10)
-            .exec((err, rooms) => {
-                if (err) return mongooseErrorResponse(res, countError);
-                Room.countDocuments().exec((countError, count) => {
-                    if (countError)
-                        return mongooseErrorResponse(res, countError);
-
-                    return res.status(200).json({
-                        rooms,
-                        pagination: {
-                            offset: offset ? parseInt(offset) : 0,
-                            limit: limit ? parseInt(limit) : 0,
-                            count,
+        const t = await Room.aggregate([
+            {
+                $lookup: {
+                    from: "roomtypes",
+                    localField: "roomType",
+                    foreignField: "_id",
+                    as: "roomType",
+                },
+            },
+            {
+                $unwind: { path: "$roomType" },
+            },
+            {
+                $unset: "roomType._id",
+            },
+            {
+                $replaceRoot: {
+                    newRoot: { $mergeObjects: ["$$ROOT", "$roomType"] },
+                },
+            },
+            {
+                $unset: ["roomType", "__v"],
+            },
+            {
+                $match: { capacity: { $gte: parseInt(capacity) } },
+            },
+            {
+                $sort: {
+                    price: s,
+                },
+            },
+            {
+                $facet: {
+                    pagination: [
+                        {
+                            $count: "count",
                         },
-                    });
-                });
-            });
+                        {
+                            $addFields: {
+                                offset: parseInt(offset || 0),
+                                limit: parseInt(limit || 10),
+                            },
+                        },
+                    ],
+                    rooms: [
+                        {
+                            $skip: parseInt(offset || 0),
+                        },
+                        {
+                            $limit: parseInt(limit || 10),
+                        },
+                    ],
+                },
+            },
+            {
+                $addFields: {
+                    pagination: {
+                        $arrayElemAt: ["$pagination", 0],
+                    },
+                },
+            },
+        ]);
+
+        return res.status(200).json(t);
     } catch (e) {
+        console.log(e);
         return mongooseErrorResponse(res, e);
     }
 };

@@ -2,9 +2,9 @@ import User from "../../schemas/User.js";
 import mongooseErrorResponse from "../../utils/mongooseErrorResponse.js";
 
 const userSort = {
-    emailAsc: 1,
-    emailDesc: -1
-}
+    emailAsc: "emailAsc",
+    emailDesc: "emailDesc",
+};
 
 /**
  * @param {e.Request} req
@@ -17,7 +17,7 @@ export default async (req, res) => {
     // Sort
     let s = 1;
 
-    if(sort && sort === userSort.emailDesc) {
+    if (sort && sort === userSort.emailDesc) {
         s = -1;
     }
 
@@ -28,23 +28,23 @@ export default async (req, res) => {
             .skip(offset || 0)
             .limit(limit || 10)
             .exec((err, users) => {
-                if(err) return mongooseErrorResponse(res, err);
+                if (err) return mongooseErrorResponse(res, err);
 
-                User.countDocuments(query)
-                    .exec((countError, count) => {
-                        if(countError)  return mongooseErrorResponse(res, countError);
+                User.countDocuments(query).exec((countError, count) => {
+                    if (countError)
+                        return mongooseErrorResponse(res, countError);
 
-                        return res.status(200).json({
-                            users,
-                            pagination: {
-                                offset: offset ? parseInt(offset) : 0,
-                                limit: limit ? parseInt(limit) : 0,
-                                count
-                            }
-                        });
-                    })
-            })
+                    return res.status(200).json({
+                        users,
+                        pagination: {
+                            offset: offset ? parseInt(offset) : 0,
+                            limit: limit ? parseInt(limit) : 0,
+                            count,
+                        },
+                    });
+                });
+            });
     } catch (e) {
         return mongooseErrorResponse(res, e);
     }
-}
+};
