@@ -9,7 +9,7 @@ export default async (req, res) => {
     const { roomId } = req.params;
 
     try {
-        const r = await Room.findOne({ _id: roomId });
+        const r = await Room.findOne({ _id: roomId }).populate("roomType");
 
         if (!r)
             return genericErrorResponse(

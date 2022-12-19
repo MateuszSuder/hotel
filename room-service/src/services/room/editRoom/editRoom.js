@@ -21,7 +21,8 @@ export default async (req, res) => {
 
         const room = await Room.findOneAndUpdate(
             { _id: roomId },
-            { roomTypeId, roomNumber, floor }
+            { roomType: roomTypeId, roomNumber, floor },
+            { new: true }
         );
 
         if (!room)

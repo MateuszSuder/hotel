@@ -17,7 +17,7 @@ export default async (req, res) => {
                 `roomTypeId ${roomTypeId} not found`,
                 404
             );
-        const room = new Room({ roomTypeId, roomNumber, floor });
+        const room = new Room({ roomType: roomTypeId, roomNumber, floor });
 
         const t = await room.save();
 
