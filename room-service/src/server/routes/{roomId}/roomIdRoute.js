@@ -5,6 +5,6 @@ const router = express.Router({ mergeParams: true });
 
 router.get("", getRoomById);
 
-router.post("", editRoom);
+router.put("", editRoom);
 
 export default router;

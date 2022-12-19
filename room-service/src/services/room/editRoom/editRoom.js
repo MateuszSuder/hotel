@@ -1,7 +1,33 @@
+import Room from "../../../schemas/Room.js";
+import RoomType from "../../../schemas/RoomType.js";
+import genericErrorResponse from "../../../utils/genericErrorResponse.js";
+import mongooseErrorResponse from "../../../utils/mongooseErrorResponse.js";
 /**
  * @param {e.Request} req
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    res.status(501).send(null);
-}
+    const { roomId } = req.params;
+    const { roomTypeId, roomNumber, floor } = req.body;
+
+    try {
+        const roomType = await RoomType.findById(roomTypeId);
+        if (!roomType)
+            return genericErrorResponse(
+                res,
+                `roomTypeId ${roomTypeId} not found`,
+                404
+            );
+
+        const room = await Room.findOneAndUpdate(
+            { _id: roomId },
+            { roomTypeId, roomNumber, floor }
+        );
+
+        if (!room)
+            return genericErrorResponse(res, `roomId ${roomId} not found`, 404);
+        res.status(200).send(room);
+    } catch (e) {
+        return mongooseErrorResponse(res, e);
+    }
+};
