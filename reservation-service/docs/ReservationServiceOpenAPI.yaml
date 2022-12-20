@@ -90,7 +90,7 @@ paths:
           description: Id rezerwacji
           schema:
             type: string
-          required: true  
+          required: true
       responses:
         200:
           description: Rezerwacja zwrócona
@@ -114,7 +114,7 @@ paths:
           description: Id rezerwacji
           schema:
             type: string
-          required: true    
+          required: true
       requestBody:
         content:
           application/json:
@@ -235,58 +235,24 @@ paths:
         - in: path
           name: reservationId
           description: Id rezerwacji
-          schema: 
+          schema:
             type: string
           required: true
         - in: path
           name: issueId
           description: Id problemu
-          schema: 
+          schema:
             type: string
           required: true
       responses:
-         200:
+        200:
           description: Problem zwrócony
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  issues:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/ReservationIssue" 
-          403:
-          $ref: "#/components/responses/Forbidden"
-          404:
-            description: Rezerwacja lub problem nieznaleziony
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/GenericError"
-    post:
-      description: Wysyła nową wiadomość
-      parameters:
-        - in: path
-          name: reservationId
-          description: Id rezerwacji
-          schema: 
-            type: string
-          required: true
-        - in: path
-          name: issueId
-          description: Id problemu
-          schema: 
-            type: string
-          required: true
-      requestBody:
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ReservationIssue"
-      responses:
-        200:
-          description: Wiadomość wysłana porpawnie
+                allOf:
+                  - $ref: "#/components/schemas/ReservationIssue"
+                  - $ref: "#/components/schemas/ListOfMessages"
         403:
           $ref: "#/components/responses/Forbidden"
         404:
@@ -294,7 +260,38 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GenericError"            
+                $ref: "#/components/schemas/GenericError"
+    post:
+      description: Wysyła nową wiadomość
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: issueId
+          description: Id problemu
+          schema:
+            type: string
+          required: true
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+      responses:
+        200:
+          description: Wiadomość wysłana poprawnie
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja lub problem nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
 components:
   responses:
     Forbidden:
@@ -364,6 +361,28 @@ components:
               - $ref: "#/components/schemas/TotalPrice"
         pagination:
           $ref: "#/components/schemas/Pagination"
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+    MessageWithDate:
+      type: object
+      properties:
+        message:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Date"
+        sender:
+          type: string
+          enum: [ user, employee ]
+    ListOfMessages:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageWithDate"
     Pagination:
       required: [ count, offset, limit ]
       type: object
