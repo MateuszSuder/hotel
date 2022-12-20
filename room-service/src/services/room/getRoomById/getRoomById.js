@@ -1,7 +1,8 @@
-import { ObjectID } from "bson";
 import Room from "../../../schemas/Room.js";
 import genericErrorResponse from "../../../utils/genericErrorResponse.js";
 import mongooseErrorResponse from "../../../utils/mongooseErrorResponse.js";
+import mongoose from "mongoose";
+
 /**
  * @param {e.Request} req
  * @param {e.Response} res
@@ -12,7 +13,7 @@ export default async (req, res) => {
         const room = await Room.aggregate([
             {
                 $match: {
-                    _id: ObjectID(roomId),
+                    _id: new mongoose.Types.ObjectId(roomId),
                 },
             },
             {
