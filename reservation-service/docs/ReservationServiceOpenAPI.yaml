@@ -97,7 +97,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Reservation"
+                allOf:
+                  - $ref: "#/components/schemas/Reservation"
+                  - type: object
+                    properties:
+                      issues:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/ReservationIssue"
+
         403:
           $ref: "#/components/responses/Forbidden"
         404:
@@ -357,8 +365,16 @@ components:
           items:
             allOf:
               - $ref: "#/components/schemas/Reservation"
-              - $ref: "#/components/schemas/ReservationStatus"
-              - $ref: "#/components/schemas/TotalPrice"
+              - type: object
+                properties:
+                  status:
+                    $ref: "#/components/schemas/ReservationStatus"
+                  price:
+                    $ref: "#/components/schemas/TotalPrice"
+                  issues:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReservationIssue"
         pagination:
           $ref: "#/components/schemas/Pagination"
     Message:
