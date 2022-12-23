@@ -1,5 +1,5 @@
+import {fieldEncryption} from "mongoose-field-encryption";
 import mongoose from "mongoose";
-import encryptSchema from "../utils/encryptSchema.js";
 
 export const messageSchema = new mongoose.Schema({
     sender: {
@@ -17,7 +17,10 @@ export const messageSchema = new mongoose.Schema({
     }
 });
 
-encryptSchema(messageSchema);
+messageSchema.plugin(fieldEncryption, {
+    fields: ["message"],
+    secret: process.env.ENC_KEY
+})
 
 const issueSchema = new mongoose.Schema({
     reservationId: {
@@ -40,4 +43,5 @@ const issueSchema = new mongoose.Schema({
     }
 });
 
+export const Message = mongoose.model("Message", messageSchema);
 export default mongoose.model("Issue", issueSchema);
