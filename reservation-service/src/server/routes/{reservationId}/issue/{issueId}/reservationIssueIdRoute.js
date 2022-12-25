@@ -1,11 +1,10 @@
 import express from "express";
-import issueSendMessage from "../../../../../services/issue/issueSendMessage.js";
+import issueSendMessage from "../../../../../services/issue/addMessage/issueSendMessage.js";
+import getIssue from "../../../../../services/issue/getIssue/getIssue.js";
 
 const router = express.Router({ mergeParams: true });
 
-router.get("", (req, res) => {
-    res.status(501).send(null);
-});
+router.get("", getIssue);
 
 router.post("", issueSendMessage);
 

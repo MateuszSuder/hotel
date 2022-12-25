@@ -1,10 +1,10 @@
+import mongooseErrorResponse from "../../../utils/mongooseErrorResponse.js";
+import Issue from "../../../schemas/Issue.js";
+
 /**
  * @param {e.Request} req
  * @param {e.Response} res
  */
-import mongooseErrorResponse from "../../../utils/mongooseErrorResponse.js";
-import Issue from "../../../schemas/Issue.js";
-
 export default async (req, res) => {
     const { reservationId } = req.params;
     const { issueTopic } = req.body;

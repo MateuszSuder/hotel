@@ -1,5 +1,5 @@
-import Issue, {Message} from "../../schemas/Issue.js";
-import genericErrorResponse from "../../utils/genericErrorResponse.js";
+import Issue, {Message} from "../../../schemas/Issue.js";
+import genericErrorResponse from "../../../utils/genericErrorResponse.js";
 
 /**
  * @param {e.Request} req
