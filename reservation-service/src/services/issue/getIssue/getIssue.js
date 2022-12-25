@@ -1,5 +1,6 @@
 import Issue from "../../../schemas/Issue.js";
 import genericErrorResponse from "../../../utils/genericErrorResponse.js";
+import mongooseErrorResponse from "../../../utils/mongooseErrorResponse.js";
 
 /**
  * @param {e.Request} req
@@ -24,6 +25,6 @@ export default async (req, res) => {
 
         res.status(200).json(issue);
     } catch (e) {
-
+        return mongooseErrorResponse(res, e);
     }
 }
