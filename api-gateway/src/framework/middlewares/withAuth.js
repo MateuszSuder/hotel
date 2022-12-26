@@ -1,9 +1,10 @@
 import internalFetcher from "../../http/internalFetcher.js";
 import genericErrorResponse from "../../utils/genericErrorResponse.js";
 import ROLES from "../../utils/roles.js";
+import jwt from "jsonwebtoken";
 
 /**
- * @typedef {'ADMIN' | 'LIBRARIAN' | 'USER'} Role
+ * @typedef {'ADMIN' | 'EMPLOYEE' | 'USER'} Role
  */
 
 /**
@@ -22,24 +23,20 @@ const withAuth = (options= {
             return next();
         } else {
             try {
-                let cookies = "";
-                for(const cookie in req.cookies) {
-                    cookies += `${cookie}=${req.cookies[cookie]};`
+                let decoded;
+                try {
+                    decoded = jwt.verify(req.cookies.token, process.env.SECRET);
+                } catch (e) {
+                    return genericErrorResponse(res, null, 401);
                 }
 
-                const { payload: user } = await internalFetcher("auth", "POST", "authorize", {
-                    headers: {
-                        Cookie: cookies
+                if(options.role) {
+                    if(ROLES[decoded.role] < ROLES[options.role]) {
+                        return genericErrorResponse(res, null, 403);
                     }
-                })
-
-                if(options?.role) {
-                    if(!user.role) return genericErrorResponse(res, null, 403);
-
-                    if(ROLES[user.role] < ROLES[options.role]) return genericErrorResponse(res, null, 403);
                 }
 
-                req.user = user;
+                req.user = decoded;
             } catch (e) {
                 return genericErrorResponse(res, null, e.status || 500);
             }

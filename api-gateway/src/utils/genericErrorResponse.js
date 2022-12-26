@@ -5,7 +5,7 @@
  * @param {number} status
  */
 export default function genericErrorResponse(response, message, status) {
-    if(message.errors) message = message.errors;
+    if(message && message.errors) message = message.errors;
     if(!message) return response.status(status).send(null);
 
     if(!Array.isArray(message)) message = [message];
