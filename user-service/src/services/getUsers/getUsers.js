@@ -12,7 +12,7 @@ const userSort = {
  */
 export default async (req, res) => {
     // todo 403 implementation
-    const { offset, limit, roleFilter, sort } = req.query;
+    const { offset, limit, roleFilter, sort, email } = req.query;
 
     // Sort
     let s = 1;
@@ -22,6 +22,12 @@ export default async (req, res) => {
     }
 
     try {
+        if(email) {
+            const user = await User.find({ email }, "-__v");
+
+            return res.status(200).json(user);
+        }
+
         let query = roleFilter && { role: roleFilter };
         User.find(query)
             .sort({ email: s })

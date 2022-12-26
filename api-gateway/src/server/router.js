@@ -36,9 +36,11 @@ const initEP = async (path) => {
             if(fileRegex.test(file)) {
                 const finalPath = relativePath(path, file);
                 const epPath = path.slice(path.search("/routes") + "/routes".length).replaceAll("{", ":").replaceAll("}", "");
-                console.log("Path:", epPath);
 
                 const { default: module } = await import(finalPath);
+                for(const layer of module.stack) {
+                    console.log(`Path: [${Object.keys(layer.route.methods)[0]}] ${epPath}${layer.route.path}`);
+                }
                 app.use(`${epPath}`, module);
             }
         }
