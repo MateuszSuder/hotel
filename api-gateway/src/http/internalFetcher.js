@@ -36,13 +36,12 @@ async function parseResponseContent(response) {
 
 /**
  * Fetcher to create http request to other services
- * @param {"auth" | "user" | "book" | "reservation" | "borrowing" | "notification"} service service to which create request
+ * @param {"user" | "room" | "reservation"} service service to which create request
  * @param {"POST" | "GET" | "PUT" | "DELETE"} method
  * @param {string} path endpoint path
  * @param [options] options for request
  * @param {object} [options.body]
  * @param {HeadersInit} [options.headers]
- * @param {boolean} [options.key]
  * @param {object} [options.query] query parameters
  * @throws {FetchError} on fetch error
  * @return {Promise<*>}
@@ -54,10 +53,6 @@ export default async function internalFetcher(service, method, path, options) {
             "Content-type": "application/json"
         }
     };
-
-    if(options?.key) {
-        optionsInit.headers["X-API-KEY"] = process.env.API_KEY;
-    }
 
     if(options?.body) {
         optionsInit.body = JSON.stringify(options.body);
@@ -74,7 +69,7 @@ export default async function internalFetcher(service, method, path, options) {
         query = `?${new URLSearchParams(options.query).toString()}`
     }
 
-    const response = await fetch(`http://${services[service].name}:${services[service].port}/${path}${query}`, {
+    const response = await fetch(`http://${services[service].name}:${services[service].port}/${service}/${path}${query}`, {
         method,
         ...optionsInit
     });

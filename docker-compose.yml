@@ -1,4 +1,15 @@
 services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+    depends_on:
+      - api-gateway
+      - user-service
+      - reservation-service
+      - room-service
   api-gateway:
     container_name: ${GATEWAY_NAME}
     restart: always
