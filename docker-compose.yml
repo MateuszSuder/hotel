@@ -10,6 +10,22 @@ services:
       - user-service
       - reservation-service
       - room-service
+  frontend:
+    container_name: ${FRONTEND_NAME}
+    restart: always
+    build:
+      context: ./${FRONTEND_NAME}
+      args:
+        PORT: ${FRONTEND_PORT}
+        NAME: ${FRONTEND_NAME}
+    environment:
+      - PORT=${FRONTEND_PORT}
+      - NAME=${FRONTEND_NAME}
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    volumes:
+      - ./${FRONTEND_NAME}:/${FRONTEND_NAME}
+      - /${FRONTEND_NAME}/node_modules
   api-gateway:
     container_name: ${GATEWAY_NAME}
     restart: always

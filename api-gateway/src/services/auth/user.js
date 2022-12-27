@@ -18,7 +18,6 @@ export default async (req, res) => {
 
         res.status(200).json(rest);
     } catch (e) {
-        console.log(e);
         return genericErrorResponse(res, e, e.status);
     }
 }
