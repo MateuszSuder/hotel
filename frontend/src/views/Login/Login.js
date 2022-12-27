@@ -4,9 +4,9 @@ import LoginForm from "./LoginForm";
 
 const Login = () => {
     return (
-        <Grid justifyContent="center" alignItems="center" sx={{ position: "absolute", height: "100vh" }} container maxWidth="xl">
-            <Grid item width="50%">
-                <Paper elevation={3}>
+        <Grid justifyContent="center" alignItems="center" sx={{ position: "absolute", width: "100vw", height: "100vh" }} container>
+            <Grid item width="40%">
+                <Paper elevation={8}>
                     <LoginForm />
                 </Paper>
             </Grid>
