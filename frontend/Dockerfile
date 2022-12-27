@@ -8,4 +8,4 @@ RUN npm install && npm cache clean --force
 
 COPY . ./
 EXPOSE ${PORT}
-CMD [ "npm", "start" ]
+CMD npm start --host 0.0.0.0 --port 3000 --disableHostCheck true
