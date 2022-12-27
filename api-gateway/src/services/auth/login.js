@@ -20,6 +20,9 @@ export default async (req, res) => {
             return genericErrorResponse(res, "Incorrect credentials", 401);
         }
 
+        if(user.isBlocked || user.isDeleted)
+            return genericErrorResponse(res, null, 401);
+
         const ok = await bcrypt.compare(`${password}.${process.env.PEPPER}`, user.password);
 
         if(!ok) return genericErrorResponse(res, "Incorrect credentials", 401);

@@ -36,6 +36,14 @@ const withAuth = (options= {
                     }
                 }
 
+                const user = await internalFetcher("user", "GET", `${decoded.id}`);
+
+                if(user.isBlocked)
+                    return genericErrorResponse(res, "User blocked", 401);
+
+                if(user.isDeleted)
+                    return genericErrorResponse(res, "User deleted", 401);
+
                 req.user = decoded;
             } catch (e) {
                 return genericErrorResponse(res, null, e.status || 500);
