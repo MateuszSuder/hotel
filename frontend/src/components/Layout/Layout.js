@@ -1,5 +1,17 @@
 import React from 'react';
-import {AppBar, Avatar, Box, Container, IconButton, Menu, Toolbar, Tooltip, Typography} from "@mui/material";
+import {
+    AppBar,
+    Avatar,
+    Box,
+    Container,
+    Divider,
+    Grid,
+    IconButton,
+    Menu,
+    Toolbar,
+    Tooltip,
+    Typography
+} from "@mui/material";
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import theme from "../theme/theme";
 import {Link, Outlet} from "react-router-dom";
@@ -44,9 +56,11 @@ const Layout = () => {
                     </Toolbar>
                 </Container>
             </AppBar>
-            <Container maxWidth="xl">
-                <Outlet />
-            </Container>
+            <Grid mt={1} container>
+                <Container maxWidth="xl">
+                    <Outlet />
+                </Container>
+            </Grid>
         </>
     );
 };
