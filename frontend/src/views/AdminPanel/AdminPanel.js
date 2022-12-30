@@ -7,16 +7,16 @@ import AdminIssues from "../../components/AdminPanel/AdminIssues";
 import PageWithMenu from "../../components/PageWithMenu/PageWithMenu";
 
 const subPages = [
-    {name: "Użytkownicy", icon: <People/>, component: AdminUsers},
-    {name: "Pokoje", icon: <Bed/>, component: AdminRooms},
-    {name: "Rezerwacje", icon: <Bookmarks/>, component: AdminReservations},
-    {name: "Problemy", icon: <BugReport/>, component: AdminIssues},
+    {name: "Użytkownicy", path: "users", icon: <People/>, component: AdminUsers},
+    {name: "Pokoje", path: "rooms", icon: <Bed/>, component: AdminRooms},
+    {name: "Rezerwacje", path: "reservations", icon: <Bookmarks/>, component: AdminReservations},
+    {name: "Problemy", path: "issues", icon: <BugReport/>, component: AdminIssues},
 ]
 
 
 const AdminPanel = () => {
     return (
-        <PageWithMenu subPages={subPages} />
+        <PageWithMenu subPages={subPages}/>
     );
 };
 

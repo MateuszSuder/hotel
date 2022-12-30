@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Layout from "./components/Layout/Layout";
 import RoomList from "./views/RoomList/RoomList";
 import Profile from "./views/Profile";
@@ -21,7 +21,8 @@ function App() {
                   </Route>
                   <Route element={<Layout container={false} />}>
                       <Route path="/profile" element={<Profile />}/>
-                      <Route path="/admin" element={<AdminPanel />}/>
+                      <Route path="/admin" element={<Navigate to="/admin/users" />} />
+                      <Route path="/admin/:subPage" element={<AdminPanel />}/>
                   </Route>
                   <Route path="/login" element={<Login />}/>
                   <Route path="/register" element={<Register />} />
