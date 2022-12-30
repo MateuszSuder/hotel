@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect} from 'react';
 import {
     Box,
     Divider,
@@ -11,9 +11,11 @@ import {
     Toolbar,
     Typography
 } from "@mui/material";
-import {generatePath, useNavigate, useParams} from "react-router-dom";
+import {Navigate, useLocation, useNavigate, useParams} from "react-router-dom";
 
-const AdminPanelListItems = ({page, changePage}) => {
+const drawerWidth = 240;
+
+const PanelListItems = ({page, changePage}) => {
     return (
         <ListItem key={page.name} disablePadding>
             <ListItemButton onClick={() => changePage(page)}>
@@ -29,17 +31,20 @@ const AdminPanelListItems = ({page, changePage}) => {
 }
 
 const PageWithMenu = ({ children, subPages }) => {
-    const {subPage} = useParams();
+    const { pathname } = useLocation();
     const navigate = useNavigate();
+    const {subPage} = useParams();
 
     const page = subPages.find(page => page.path === subPage);
 
+    if(!page) return (
+        <Navigate to={`${pathname.replace(subPage, "")}`} />
+    );
+
     const Component = page.component;
 
-    const drawerWidth = 240;
-
     const changePage = (page) => {
-        navigate(`/admin/${page.path}`);
+        navigate(`${pathname.replace(subPage, "")}${page.path}`);
     }
 
     return (
@@ -55,10 +60,10 @@ const PageWithMenu = ({ children, subPages }) => {
                 <Box sx={{overflow: 'auto'}}>
                     <List>
                         {subPages.map((page, index) => (
-                            <AdminPanelListItems page={page} changePage={(page) => changePage(page)} key={page.name + index} />
+                            <PanelListItems page={page} changePage={(page) => changePage(page)} key={page.name + index} />
                         ))}
                     </List>
-                </Box>
+                </Box>a
             </Drawer>
             <Box component="main" sx={{ display: "flex", flexDirection: "column", width: "100%" }} p={2}>
                 <Typography variant="h4" mb={1}>
