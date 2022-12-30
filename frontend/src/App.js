@@ -8,6 +8,7 @@ import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import Register from "./views/Login/Register";
 import Room from "./views/Room/Room";
+import AdminPanel from "./views/AdminPanel/AdminPanel";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
                       <Route path="/" element={<RoomList />}/>
                       <Route path="/room/:roomId" element={<Room />}/>
                       <Route path="/profile" element={<Profile />}/>
+                      <Route path="/admin" element={<AdminPanel />}/>
                   </Route>
                   <Route path="/login" element={<Login />}/>
                   <Route path="/register" element={<Register />} />
