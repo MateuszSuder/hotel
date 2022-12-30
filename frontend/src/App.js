@@ -6,17 +6,19 @@ import Login from "./views/Login/Login";
 import React from "react";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
+import Room from "./views/Room/Room";
 
 function App() {
   return (
       <LocalizationProvider dateAdapter={AdapterMoment}>
           <BrowserRouter>
               <Routes>
-                  <Route element={<Layout/>}>
-                      <Route path="/" element={<RoomList/>}/>
-                      <Route path="/profile" element={<Profile/>}/>
+                  <Route element={<Layout />}>
+                      <Route path="/" element={<RoomList />}/>
+                      <Route path="/room/:roomId" element={<Room />}/>
+                      <Route path="/profile" element={<Profile />}/>
                   </Route>
-                  <Route path="/login" element={<Login/>}/>
+                  <Route path="/login" element={<Login />}/>
               </Routes>
           </BrowserRouter>
       </LocalizationProvider>
