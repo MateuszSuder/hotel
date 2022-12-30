@@ -62,7 +62,9 @@ const Layout = ({container = true}) => {
                             <Outlet />
                         </Container>
                     ) : (
-                        <Outlet />
+                        <Grid width="100%">
+                            <Outlet />
+                        </Grid>
                     )
                 }
 
