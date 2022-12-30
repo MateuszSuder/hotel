@@ -56,6 +56,7 @@ const Layout = () => {
                     </Toolbar>
                 </Container>
             </AppBar>
+            <Toolbar />
             <Grid mt={1} container>
                 <Container maxWidth="xl">
                     <Outlet />

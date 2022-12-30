@@ -44,7 +44,7 @@ const AdminPanel = () => {
 
     const drawerWidth = 240;
     return (
-        <>
+        <Box sx={{ display: "flex" }}>
             <Drawer
                 variant="permanent"
                 sx={{
@@ -62,15 +62,14 @@ const AdminPanel = () => {
                     </List>
                 </Box>
             </Drawer>
-            <Toolbar />
-            <Grid maxWidth={"xl"} container flexDirection="column" pl={5}>
+            <Box component="main" sx={{ flexGrow: 1 }}>
                 <Typography variant="h4">
                     { page.name }
                 </Typography>
                 <Divider />
                 <Component />
-            </Grid>
-        </>
+            </Box>
+        </Box>
     );
 };
 
