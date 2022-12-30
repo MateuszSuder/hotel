@@ -4,10 +4,8 @@ import {
     Avatar,
     Box,
     Container,
-    Divider,
     Grid,
     IconButton,
-    Menu,
     Toolbar,
     Tooltip,
     Typography
@@ -16,7 +14,7 @@ import RoomServiceIcon from '@mui/icons-material/RoomService';
 import theme from "../theme/theme";
 import {Link, Outlet} from "react-router-dom";
 
-const Layout = () => {
+const Layout = ({container = true}) => {
     return (
         <>
             <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -58,9 +56,16 @@ const Layout = () => {
             </AppBar>
             <Toolbar />
             <Grid mt={1} container>
-                <Container maxWidth="xl">
-                    <Outlet />
-                </Container>
+                {
+                    container ? (
+                        <Container maxWidth="xl">
+                            <Outlet />
+                        </Container>
+                    ) : (
+                        <Outlet />
+                    )
+                }
+
             </Grid>
         </>
     );

@@ -15,9 +15,11 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterMoment}>
           <BrowserRouter>
               <Routes>
-                  <Route element={<Layout />}>
+                  <Route element={<Layout container={true} />}>
                       <Route path="/" element={<RoomList />}/>
                       <Route path="/room/:roomId" element={<Room />}/>
+                  </Route>
+                  <Route element={<Layout container={false} />}>
                       <Route path="/profile" element={<Profile />}/>
                       <Route path="/admin" element={<AdminPanel />}/>
                   </Route>

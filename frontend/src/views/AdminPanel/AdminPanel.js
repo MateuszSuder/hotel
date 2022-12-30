@@ -44,12 +44,12 @@ const AdminPanel = () => {
 
     const drawerWidth = 240;
     return (
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex" }} className="test">
             <Drawer
                 variant="permanent"
                 sx={{
                     width: drawerWidth,
-                    flexShrink: 0,
+                    flexShrink: 1,
                     [`& .MuiDrawer-paper`]: {width: drawerWidth, boxSizing: 'border-box'},
                 }}
             >
@@ -62,7 +62,7 @@ const AdminPanel = () => {
                     </List>
                 </Box>
             </Drawer>
-            <Box component="main" sx={{ flexGrow: 1 }}>
+            <Box component="main" sx={{ flexGrow: -1, display: "flex" }}>
                 <Typography variant="h4">
                     { page.name }
                 </Typography>
