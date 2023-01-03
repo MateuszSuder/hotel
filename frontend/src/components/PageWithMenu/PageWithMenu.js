@@ -12,6 +12,7 @@ import {
     Typography
 } from "@mui/material";
 import {Navigate, useLocation, useNavigate, useParams} from "react-router-dom";
+import theme from "../theme/theme";
 
 const drawerWidth = 240;
 
@@ -69,7 +70,7 @@ const PageWithMenu = ({ children, subPages }) => {
                 <Typography variant="h4" mb={1}>
                     { page.name }
                 </Typography>
-                <Divider />
+                <Divider sx={{marginBottom: theme.spacing(2)}} />
                 <Component />
                 {children}
             </Box>
