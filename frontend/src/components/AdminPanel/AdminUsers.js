@@ -30,7 +30,7 @@ const RoleChip = ({role}) => {
     switch(role) {
         case "USER":
             return (
-                <Chip label="user" color="success" />
+                <Chip label="użytkownik" color="success" />
             )
         case "EMPLOYEE":
             return (
