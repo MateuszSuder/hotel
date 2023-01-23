@@ -17,10 +17,6 @@ router.get("/2fa", withAuth({ role: "USER" }), twoFactorQR);
 
 router.put("/2fa", withAuth({ role: "USER" }), twoFactorEnable);
 
-router.post("/2fa", (req, res) => {
-    res.status(501).send("login");
-});
-
 router.post("/login", login);
 
 router.post("/register", register);

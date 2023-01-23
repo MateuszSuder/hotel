@@ -27,6 +27,19 @@ export default async (req, res) => {
 
         if(!ok) return genericErrorResponse(res, "Nieprawidłowe dane", 401);
 
+        if(user.twoFactorEnabled) {
+            if(!req.body.code) {
+                return res.status(401).json({ codeNeeded: true })
+            } else {
+                const response = await fetch(`https://www.authenticatorApi.com/Validate.aspx?Pin=${req.body.code}&SecretCode=${process.env.AUTHENTICATOR_SECRET}.${user._id}`);
+                const success = await response.text();
+
+                if(success === "False") {
+                    return genericErrorResponse(res, "Niepoprawny kod", 401);
+                }
+            }
+        }
+
         const token = jwt.sign({
             id: user._id, email: user.email, role: user.role
         }, process.env.SECRET, {
