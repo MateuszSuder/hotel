@@ -1,8 +1,6 @@
 import internalFetcher from "../../http/internalFetcher.js";
 import genericErrorResponse from "../../utils/genericErrorResponse.js";
-import crypto from "crypto";
 import ActivationSchema from "../../schemas/ActivationSchema.js";
-import mongoose from "mongoose";
 import mongooseErrorResponse from "../../utils/mongooseErrorResponse.js";
 
 /**
@@ -16,7 +14,7 @@ export default async (req, res) => {
             activationToken: token
         });
 
-        if(entry) {e
+        if(entry) {
             try {
                 await internalFetcher("user", "PUT", `/${entry.userId}/activate`);
 

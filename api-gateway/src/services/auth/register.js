@@ -4,9 +4,7 @@ import crypto from "crypto";
 import ActivationSchema from "../../schemas/ActivationSchema.js";
 import mongoose from "mongoose";
 import nodemailer from "nodemailer";
-import { google } from 'googleapis';
 import mongooseErrorResponse from "../../utils/mongooseErrorResponse.js";
-const OAuth2 = google.auth.OAuth2;
 
 /**
  * @param {e.Request} req

@@ -18,7 +18,15 @@ export default async (req, res) => {
 
             const { name, lastName, dateOfBirth, address } = req.body;
 
-            const newUser = new User(Object.assign(user, { name, lastName, dateOfBirth, address }));
+            const u = { name, lastName, dateOfBirth, address };
+
+            if(req.body.twoFactorEnabled) {
+                u.twoFactorEnabled = req.body.twoFactorEnabled;
+            }
+
+            console.log(u);
+
+            const newUser = new User(Object.assign(user, u));
             await newUser.save();
             res.status(200).send(null);
         })
