@@ -3,10 +3,13 @@ import register from "../../../services/auth/register.js";
 import login from "../../../services/auth/login.js";
 import withAuth from "../../../framework/middlewares/withAuth.js";
 import user from "../../../services/auth/user.js";
+import activate from "../../../services/auth/activate.js";
 
 const router = express.Router();
 
 router.get("/user", withAuth({ role: "USER" }), user);
+
+router.get("/activate", activate);
 
 router.get("/2fa", (req, res) => {
     res.status(501).send("login");

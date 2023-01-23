@@ -36,13 +36,18 @@ const withAuth = (options= {
                     }
                 }
 
+                console.log(req.session);
+
                 const user = await internalFetcher("user", "GET", `${decoded.id}`);
 
                 if(user.isBlocked)
-                    return genericErrorResponse(res, "User blocked", 401);
+                    return genericErrorResponse(res, "Użytkownik zablokowany", 401);
 
                 if(user.isDeleted)
-                    return genericErrorResponse(res, "User deleted", 401);
+                    return genericErrorResponse(res, "Użytkownik usunięty", 401);
+
+                if(!user.isActive)
+                    return genericErrorResponse(res, "Użytkownik nieaktywny", 401);
 
                 req.user = decoded;
             } catch (e) {

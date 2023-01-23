@@ -1,6 +1,7 @@
 import router from "./server/router.js";
 import connectDb from "./config/db.js";
 import express from "express";
+import session from 'express-session';
 
 (async () => {
     connectDb();
@@ -8,6 +9,12 @@ import express from "express";
     if(!port) throw new Error("No port specified");
 
     const app = express();
+
+    app.use(session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true
+    }))
 
     app.use("/", router);
 
