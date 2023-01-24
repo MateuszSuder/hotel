@@ -95,8 +95,8 @@ paths:
               schema:
                 type: string
                 example: <a title='Manually pair with GEZDGNBVGY3TQQSYLFKA'href='https://www.authenticatorapi.com'><img src='https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=otpauth%3A%2F%2Ftotp%2FJohn%3Fsecret%3DGEZDGNBVGY3TQQSYLFKA%26issuer%3DMyApp' border=0></a>
-    post:
-      description: Walidacja poprawności kodu
+    put:
+      description: Zatwierdza pierwsze użycie kodu
       tags:
         - auth
       requestBody:
@@ -113,25 +113,6 @@ paths:
           description: Poprawny kod
         401:
           description: Niepoprawny kod
-  /auth/2fa/confirm:
-      description: Potwierdzenia połączenia z authenticatorem poprzez pierwsze wysłanie kodu
-      post:
-        tags:
-          - auth
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-        responses:
-          200:
-            description: Poprawny kod
-          401:
-            description: Niepoprawny kod
   /auth/user:
     get:
       tags:

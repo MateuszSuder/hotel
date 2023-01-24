@@ -1,23 +1,20 @@
-import mongooseErrorResponse from "../../utils/mongooseErrorResponse.js";
-import roomValidationSchema from "../../validation/roomValidationSchema.js";
 import yupErrorResponse from "../../utils/yupErrorResponse.js";
 import internalFetcher from "../../http/internalFetcher.js";
 import genericErrorResponse from "../../utils/genericErrorResponse.js";
+import roomTypeValidationSchema from "../../validation/room/roomTypeValidationSchema.js";
 
 /**
  * @param {e.Request} req
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    const body = req.body;
-
     try {
-        const room = await roomValidationSchema.validate(body);
-
         try {
-            const response = await internalFetcher("room", "POST", "", {
+            const roomType = await roomTypeValidationSchema(req.body);
+
+            const response = await internalFetcher("room", "POST", `type`, {
                 body: {
-                    ...room
+                    ...roomType
                 }
             })
 
