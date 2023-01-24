@@ -9,6 +9,7 @@ const validationErrorMessages = {
         integer: "Pole ${label} musi być liczbą całkowitą"
     },
     string: {
+        min: "Pole ${label} musi mieć minimalnie ${max} znaków",
         max: "Pole ${label} może mieć maksymalnie ${max} znaków"
     },
     date: {

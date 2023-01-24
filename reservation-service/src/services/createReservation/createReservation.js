@@ -24,7 +24,7 @@ export default async (req, res) => {
     if(new Date(startAt) >= new Date(endAt) || new Date(startAt) < now) {
         return genericErrorResponse(
             res,
-            `Invalid reservation date range`,
+            `Nieprawidłowy przedział dat rezerwacji`,
             400
         );
     }
@@ -34,7 +34,7 @@ export default async (req, res) => {
 
         if(!room) return genericErrorResponse(
             res,
-            `roomTypeId ${roomId} not found`,
+            `roomTypeId ${roomId} nieznaleziony`,
             404
         );
 
@@ -50,7 +50,7 @@ export default async (req, res) => {
         if(reservations.length) {
             return genericErrorResponse(
                 res,
-                `Reservation is not possible with this dates`,
+                `Rezerwacja nie jest możliwa z tymi datami`,
                 409
             );
         }
