@@ -1,7 +1,8 @@
 import router from "./server/router.js";
 import connectDb from "./config/db.js";
 import express from "express";
-import session from 'express-session';
+import {setLocale} from "yup";
+import validationErrorMessages from "./validation/validationErrorMessages.js";
 
 (async () => {
     connectDb();
@@ -10,13 +11,11 @@ import session from 'express-session';
 
     const app = express();
 
-    app.use(session({
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: true
-    }))
-
     app.use("/", router);
+
+    setLocale({
+        ...validationErrorMessages
+    })
 
     app.listen(port, async () => {
         console.log(`Microservice ${process.env.NAME} running on port ${port}`);
