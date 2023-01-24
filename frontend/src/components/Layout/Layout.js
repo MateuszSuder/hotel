@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
     AppBar,
     Avatar,
@@ -8,16 +8,19 @@ import {
     IconButton,
     Toolbar,
     Tooltip,
-    Typography
+    Typography,
 } from "@mui/material";
-import RoomServiceIcon from '@mui/icons-material/RoomService';
+import RoomServiceIcon from "@mui/icons-material/RoomService";
 import theme from "../theme/theme";
-import {Link, Outlet} from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
-const Layout = ({container = true}) => {
+const Layout = ({ container = true }) => {
     return (
         <>
-            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <AppBar
+                position="fixed"
+                sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            >
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <Box>
@@ -28,11 +31,11 @@ const Layout = ({container = true}) => {
                                     letterSpacing={theme.spacing(0.3)}
                                     sx={{
                                         mr: 2,
-                                        display: { xs: 'none', md: 'flex' },
-                                        color: 'inherit',
-                                        textDecoration: 'none',
-                                        alignItems: 'center',
-                                        gap: theme.spacing(1)
+                                        display: { xs: "none", md: "flex" },
+                                        color: "inherit",
+                                        textDecoration: "none",
+                                        alignItems: "center",
+                                        gap: theme.spacing(1),
                                     }}
                                 >
                                     <RoomServiceIcon fontSize="32" />
@@ -40,13 +43,11 @@ const Layout = ({container = true}) => {
                                 </Typography>
                             </Link>
                         </Box>
-                        <Box sx={{marginLeft: "auto"}}>
-                            <Link to="/profile">
+                        <Box sx={{ marginLeft: "auto" }}>
+                            <Link to="/profile/info">
                                 <Tooltip title="Profil użytkownika">
                                     <IconButton sx={{ p: 0 }}>
-                                        <Avatar>
-                                            M
-                                        </Avatar>
+                                        <Avatar>M</Avatar>
                                     </IconButton>
                                 </Tooltip>
                             </Link>
@@ -56,18 +57,15 @@ const Layout = ({container = true}) => {
             </AppBar>
             <Toolbar />
             <Grid mt={1} container>
-                {
-                    container ? (
-                        <Container maxWidth="xl">
-                            <Outlet />
-                        </Container>
-                    ) : (
-                        <Grid width="100%">
-                            <Outlet />
-                        </Grid>
-                    )
-                }
-
+                {container ? (
+                    <Container maxWidth="xl">
+                        <Outlet />
+                    </Container>
+                ) : (
+                    <Grid width="100%">
+                        <Outlet />
+                    </Grid>
+                )}
             </Grid>
         </>
     );
