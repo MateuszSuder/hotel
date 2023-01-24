@@ -7,8 +7,8 @@ import mongooseErrorResponse from "../../../utils/mongooseErrorResponse.js";
  * @param {e.Response} res
  */
 export default async (req, res) => {
+    const { roomTypeId, roomNumber, floor } = req.body;
     try {
-        const { roomTypeId, roomNumber, floor } = req.body;
         const roomType = await RoomType.findById(roomTypeId);
 
         if (!roomType)

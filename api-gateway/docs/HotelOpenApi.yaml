@@ -1,0 +1,1162 @@
+openapi: 3.0.3
+info:
+  title: Api Gateway
+  description: Dokumentacja dla API Gateway systemu hotelu.
+  version: 1.0.0
+servers:
+  - url: 'https://localhost/'
+tags:
+  - name: auth
+    description: Auth Service
+  - name: user
+    description: User Service
+  - name: reservation
+    description: Reservation Service
+  - name: room
+    description: Room Service
+paths:
+  /auth/register:
+    post:
+      tags:
+        - auth
+      description: Rejestruje użytkownika
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/User"
+                - $ref: "#/components/schemas/Password"
+      responses:
+        201:
+          description: Poprawnie zarejestrowano
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        400:
+          description: Podane niepoprawne dane
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        409:
+          description: Użytkownik z takim adresem email istnieje
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /auth/login:
+    post:
+      tags:
+        - auth
+      description: Loguje użytkownika
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required: [ email, password ]
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Użytkownik zalogowany
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/User"
+                  - type: object
+                    properties:
+                      role:
+                        $ref: "#/components/schemas/Role"
+        401:
+          description: Podane niepoprawne dane
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /auth/2fa:
+    get:
+      tags:
+        - auth
+      description: Generuje QR kod do połączenia aplikacji
+      responses:
+        200:
+          description: Zwrócono kod QR
+          content:
+            text/html:
+              schema:
+                type: string
+                example: <a title='Manually pair with GEZDGNBVGY3TQQSYLFKA'href='https://www.authenticatorapi.com'><img src='https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=otpauth%3A%2F%2Ftotp%2FJohn%3Fsecret%3DGEZDGNBVGY3TQQSYLFKA%26issuer%3DMyApp' border=0></a>
+    put:
+      description: Zatwierdza pierwsze użycie kodu
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+      responses:
+        200:
+          description: Poprawny kod
+        401:
+          description: Niepoprawny kod
+  /auth/user:
+    get:
+      tags:
+        - auth
+      responses:
+        200:
+          description: Zwraca zalogowanego użytkownika
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        403:
+          description: Brak dostępu
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /reservation:
+    get:
+      tags:
+        - reservation
+      description: Zwraca wszystkie rezerwacje
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - in: query
+          name: userId
+          description: Id użytkownika, którego rezerwacje szukamy
+          schema:
+            type: string
+        - in: query
+          name: roomId
+          description: Id pokoju, którego dotyczy rezerwacja
+          schema:
+            type: string
+        - in: query
+          name: status
+          description: Filtrowanie po statusie
+          schema:
+            type: string
+            enum: [ reserved, ended ]
+        - in: query
+          name: startAt
+          description: Data rozpoczęcia rezerwacji
+          schema:
+            $ref: "#/components/schemas/Date"
+        - in: query
+          name: endAt
+          description: Data zakończenia rezerwacji
+          schema:
+            $ref: "#/components/schemas/Date"
+      responses:
+        200:
+          description: Zwrócono listę rezerwacji
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOfReservations"
+        403:
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - reservation
+      description: Dodaje nową rezerwację
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reservation:
+                  $ref: "#/components/schemas/Reservation"
+                paymentData:
+                  $ref: "#/components/schemas/PaymentData"
+      responses:
+        201:
+          description: Rezerwacja dodana
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservationId:
+                    type: string
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        409:
+          description: Pokój już jest zarezerwowany w tym dniu
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /reservation/{reservationId}:
+    get:
+      tags:
+        - reservation
+      description: Zwraca informację o konkretnej rezerwacji
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Rezerwacja zwrócona
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Reservation"
+                  - type: object
+                    properties:
+                      issues:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/ReservationIssue"
+
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    put:
+      tags:
+        - reservation
+      description: Edytuje konkretną rezerwację
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Reservation"
+      responses:
+        200:
+          description: Rezerwacja zmieniona
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    delete:
+      tags:
+        - reservation
+      description: Usuwa konkretną rezerwację
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Rezerwacja usunięta
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /reservation/{reservationId}/issue:
+    get:
+      tags:
+        - reservation
+      description: Zwraca wszystkie zgłoszone problemy z rezerwacją
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Problemy zwrócone
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  issues:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReservationIssue"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    post:
+      tags:
+        - reservation
+      description: Tworzy nowy problem z rezerwacją
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReservationIssue"
+      responses:
+        200:
+          description: Problem stworzony
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservationTopic:
+                    type: string
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    put:
+      tags:
+        - reservation
+      description: Zmienia status rezerwacji
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [ resolved, ongoing ]
+      responses:
+        200:
+          description: Status zmieniony
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja nieznaleziona
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /reservation/{reservationId}/issue/{issueId}:
+    get:
+      tags:
+        - reservation
+      description: Zwraca konkretny problem z rezerwacją
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: issueId
+          description: Id problemu
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Problem zwrócony
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ReservationIssue"
+                  - $ref: "#/components/schemas/ListOfMessages"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja lub problem nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    post:
+      tags:
+        - reservation
+      description: Wysyła nową wiadomość
+      parameters:
+        - in: path
+          name: reservationId
+          description: Id rezerwacji
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: issueId
+          description: Id problemu
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        200:
+          description: Wiadomość wysłana poprawnie
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rezerwacja lub problem nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /room:
+    get:
+      tags:
+        - room
+      description: Zwraca wszystkie pokoje
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - in: query
+          name: isReserved
+          description: Filtr statusu pokoju (Tylko pracownik i administrator mogą użyć innych wartości niż "any")
+          schema:
+            type: string
+            enum: [ reserved, free, any ]
+        - in: query
+          name: freeFrom
+          description: Data od której pokój musi być wolny
+          schema:
+            $ref: "#/components/schemas/Date"
+        - in: query
+          name: freeTo
+          description: Data do której pokój musi być wolny
+          schema:
+            $ref: "#/components/schemas/Date"
+        - in: query
+          name: capacity
+          description: Ile osób musi pomieścić pokój
+          schema:
+            type: number
+        - in: query
+          name: sort
+          description: Sortowanie pokoi
+          schema:
+            type: string
+            enum: [ priceAsc, priceDesc ]
+      responses:
+        200:
+          description: Zwrócono listę pokoi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOfRooms"
+        403:
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - room
+      description: Dodaje pokój
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Room"
+                - type: object
+                  properties:
+                    roomTypeId:
+                      type: string
+      responses:
+        201:
+          description: Pokój dodany
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Id"
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        409:
+          description: Pokój o takim numerze pokoju istnieje
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /room/{roomId}:
+    get:
+      parameters:
+        - in: path
+          name: roomId
+          description: Id pokoju
+          required: true
+          schema:
+            type: string
+      tags:
+        - room
+      description: Zwraca pokój o podanym ID
+      responses:
+        200:
+          description: Pokój zwrócony
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Id"
+                  - $ref: "#/components/schemas/Room"
+                  - $ref: "#/components/schemas/RoomType"
+                  - $ref: "#/components/schemas/RoomTypeDescription"
+        404:
+          description: Pokój nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    put:
+      parameters:
+        - in: path
+          name: roomId
+          description: Id pokoju
+          required: true
+          schema:
+            type: string
+      tags:
+        - room
+      description: Zmienia dane pokoju
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Room"
+                - type: object
+                  properties:
+                    roomTypeId:
+                      type: string
+      responses:
+        200:
+          description: Dane pokoju zmienione
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Pokój nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        409:
+          description: Pokój o takim numerze pokoju istnieje
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /room/type:
+    get:
+      tags:
+        - room
+      description: Zwraca wszystkie rodzaje pokojów
+      responses:
+        200:
+          description: Rodzaje pokojów zwrócone
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOfRoomTypes"
+        403:
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - room
+      description: Dodaje rodzaj pokoju
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomType"
+      responses:
+        201:
+          description: Rodzaj pokoju dodany
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roomTypeId:
+                    $ref: "#/components/schemas/Id"
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        409:
+          description: Pokój o takiej nazwie pokoju istnieje
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /room/type/{typeId}:
+    get:
+      tags:
+        - room
+      parameters:
+        - in: path
+          name: typeId
+          description: Id rodzaju pokoju
+          required: true
+          schema:
+            type: string
+      description: Zwraca konkretny rodzaj pokoju
+      responses:
+        200:
+          description: Zwrócono rodzaj pokoju
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Id"
+                  - $ref: "#/components/schemas/RoomType"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rodzaj pokoju nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+    put:
+      tags:
+        - room
+      parameters:
+        - in: path
+          name: typeId
+          description: Id rodzaju pokoju
+          required: true
+          schema:
+            type: string
+      description: Zmienia dane rodzaju pokoju
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomType"
+      responses:
+        200:
+          description: Rodzaj pokoju zmieniony
+        400:
+          description: Dane nieprawidłowe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          description: Rodzaj pokoju nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+  /user:
+    get:
+      tags:
+        - user
+      description: Zwraca wszystkich użytkowników (tylko dla ADMIN i EMPLOYEE)
+      parameters:
+        - in: query
+          name: offset
+          description: Offset
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: limit
+          description: Limit
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: roleFilter
+          description: Filtrowanie użytkowników po roli
+          schema:
+            $ref: "#/components/schemas/UserRoleFilter"
+        - in: query
+          name: sort
+          description: Sortowanie
+          schema:
+            $ref: "#/components/schemas/UserSort"
+      responses:
+        200:
+          description: Zwrócono listę użytkowników
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOfUsers"
+        403:
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - user
+      description: Tworzy nowego użytkownika
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserWithPassword"
+      responses:
+        201:
+          description: Użytkownik stworzony
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+        403:
+          $ref: "#/components/responses/Forbidden"
+  /user/{id}:
+    get:
+      tags:
+        - user
+      description: Zwraca użytkownika o podanym ID
+      parameters:
+        - in: path
+          name: id
+          description: Id użytkownika
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Użytkownik znaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserWithRole"
+        403:
+          $ref: "#/components/responses/Forbidden"
+    put:
+      tags:
+        - user
+      description: Edytuje użytkownika
+      parameters:
+        - in: path
+          name: id
+          description: Id użytkownika
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserWithId"
+      responses:
+        200:
+          description: Użytkownik zmodyfikowany
+        403:
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      tags:
+        - user
+      description: Usuwa użytkownika
+      parameters:
+        - in: path
+          name: id
+          description: Id użytkownika
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Uzytkownik usunięty
+        403:
+          $ref: "#/components/responses/Forbidden"
+  /user/{id}/block:
+    post:
+      tags:
+        - user
+      description: Blokuje użytkownika
+      parameters:
+        - in: path
+          name: id
+          description: Id użytkownika
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Uzytkownik zablokowany
+        404:
+          description: Użytkownik nieznaleziony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericError"
+        403:
+          $ref: "#/components/responses/Forbidden"
+  /user/{id}/changePassword:
+    put:
+      tags:
+        - user
+      description: Zmiana hasła użyutkownika
+      parameters:
+        - in: path
+          name: id
+          description: Id Uzytkownik
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        200:
+          description: Hasło zostało zmienione
+        403:
+          $ref: "#/components/responses/Forbidden"
+components:
+  parameters:
+    Limit:
+      in: query
+      name: limit
+      description: Limit zwracanych wartości
+      schema:
+        type: number
+    Offset:
+      in: query
+      name: offset
+      description: Offset zwracanych wartości
+      schema:
+        type: number
+  schemas:
+    User:
+      type: object
+      required: [ email, name, lastName, dateOfBirth, phoneNumber, address ]
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+          example: "2019-05-17"
+        phoneNumber:
+          type: number
+        address:
+          $ref: "#/components/schemas/Address"
+    Role:
+      type: string
+      enum:
+        - USER
+        - EMPLOYEE
+        - ADMIN
+    Address:
+      type: object
+      required: [ city, street, postal, houseNumber, apartmentNumber ]
+      properties:
+        city:
+          type: string
+        street:
+          type: string
+        postal:
+          type: string
+        houseNumber:
+          type: string
+        apartmentNumber:
+          type: string
+    Password:
+      type: object
+      required: [ password ]
+      properties:
+        password:
+          type: string
+    Date:
+      type: string
+      pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+      example: "2019-05-17"
+    GenericError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+    ReservationIssue:
+      type: object
+      properties:
+        reservationId:
+          type: string
+        issueTopic:
+          type: string
+        status:
+          type: string
+          enum: [ resolved, ongoing ]
+    PaymentData:
+      type: object
+      properties:
+        cardNumber:
+          type: string
+        CVV:
+          type: string
+        validTill:
+          type: string
+    TotalPrice:
+      type: number
+    ReservationStatus:
+      type: string
+      enum: [ reserved, ended ]
+    Reservation:
+      type: object
+      properties:
+        userId:
+          type: string
+        roomId:
+          type: string
+        startAt:
+          $ref: "#/components/schemas/Date"
+        endAt:
+          $ref: "#/components/schemas/Date"
+    ListOfReservations:
+      type: object
+      properties:
+        reservations:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Reservation"
+              - type: object
+                properties:
+                  status:
+                    $ref: "#/components/schemas/ReservationStatus"
+                  price:
+                    $ref: "#/components/schemas/TotalPrice"
+                  issues:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReservationIssue"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+    MessageWithDate:
+      type: object
+      properties:
+        message:
+          type: string
+        createdAt:
+          $ref: "#/components/schemas/Date"
+        sender:
+          type: string
+          enum: [ user, employee ]
+    ListOfMessages:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageWithDate"
+    Pagination:
+      required: [ count, offset, limit ]
+      type: object
+      properties:
+        count:
+          description: Ilość możliwych wartości
+          type: number
+        offset:
+          description: Początkowy index zwracanych wartości
+          type: number
+        limit:
+          description: Ilość wartości
+          type: number
+    Id:
+      required: [ _id ]
+      type: object
+      properties:
+        _id:
+          type: string
+    Room:
+      required: [ roomNumber, floor ]
+      type: object
+      properties:
+        roomNumber:
+          type: number
+        floor:
+          type: number
+    RoomType:
+      required: [ name, capacity, price ]
+      type: object
+      properties:
+        name:
+          type: string
+        capacity:
+          type: number
+        price:
+          type: number
+    RoomTypeDescription:
+      required: [ description ]
+      type: object
+      properties:
+        description:
+          type: string
+    ListOfRoomTypes:
+      type: object
+      properties:
+        roomTypes:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Id"
+              - $ref: "#/components/schemas/RoomType"
+              - $ref: "#/components/schemas/RoomTypeDescription"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    ListOfRooms:
+      required: [ rooms, pagination ]
+      type: object
+      properties:
+        rooms:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Room"
+              - $ref: "#/components/schemas/RoomType"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+
+    UserWithId:
+      required:
+        - _id
+      allOf:
+        - $ref: "#/components/schemas/User"
+      properties:
+        _id:
+          description: Id użytkownika
+          type: string
+    UserWithPassword:
+      required:
+        - password
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - properties:
+            password:
+              description: Zaszyfrowane hasło
+              type: string
+    UserWithRole:
+      required:
+        - role
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - properties:
+            role:
+              type: string
+              enum:
+                - USER
+                - EMPLOYEE
+                - ADMIN
+    ListOfUsers:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserWithRole"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    UserRoleFilter:
+      type: string
+      enum: [ ADMIN, EMPLOYEE, USER ]
+    UserSort:
+      type: string
+      enum: [ emailAsc, emailDesc ]
+      description: >
+        Sort order:
+         * `emailAsc` - Email rosnąco, od A do Z
+         * `emailDesc` - Email malejąco, od Z do A
+  responses:
+    Forbidden:
+      description: Brak dostępu
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenericError"
+

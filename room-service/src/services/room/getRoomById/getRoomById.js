@@ -43,10 +43,11 @@ export default async (req, res) => {
                 $unset: ["roomType", "__v"],
             },
         ]);
-        if (!room)
+
+        if (!room.length)
             return genericErrorResponse(
                 res,
-                `Room with id "${roomId}" not found`,
+                `Pokój z id "${roomId}" nie znaleziony`,
                 404
             );
 

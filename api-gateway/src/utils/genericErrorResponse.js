@@ -10,7 +10,7 @@ export default function genericErrorResponse(response, message, status) {
 
     if(!Array.isArray(message)) message = [message];
 
-    return response.status(status).send({
+    return response.status(status || 500).send({
         errors: message
     });
 }

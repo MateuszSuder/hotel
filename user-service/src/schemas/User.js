@@ -65,9 +65,17 @@ const userSchema = new mongoose.Schema({
     isBlocked: {
         type: Boolean,
         default: false
+    },
+    isActive: {
+        type: Boolean,
+        default: false
+    },
+    twoFactorEnabled: {
+        type: Boolean,
+        default: false
     }
 });
 
-encryptSchema(userSchema, ['password', 'isDeleted', 'isBlocked']);
+encryptSchema(userSchema, ['password', 'isDeleted', 'isBlocked', 'isActive', 'twoFactorEnabled']);
 
 export default mongoose.model("User", userSchema);

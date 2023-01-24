@@ -18,7 +18,7 @@ export default async (req, res) => {
 
             const { name, lastName, dateOfBirth, address } = req.body;
 
-            const newUser = new User(Object.assign(user, { name, lastName, dateOfBirth, address }));
+            const newUser = new User(Object.assign(user, {name, lastName, dateOfBirth, address}));
             await newUser.save();
             res.status(200).send(null);
         })

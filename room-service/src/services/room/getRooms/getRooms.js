@@ -40,7 +40,7 @@ export default async (req, res) => {
                 $unset: ["roomType", "__v"],
             },
             {
-                $match: { capacity: { $gte: parseInt(capacity) } },
+                $match: { capacity: { $gte: parseInt(capacity || 0) } },
             },
             {
                 $sort: {
@@ -81,7 +81,6 @@ export default async (req, res) => {
 
         return res.status(200).json(t);
     } catch (e) {
-        console.log(e);
         return mongooseErrorResponse(res, e);
     }
 };
