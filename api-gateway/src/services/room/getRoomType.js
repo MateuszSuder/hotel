@@ -7,11 +7,12 @@ import genericErrorResponse from "../../utils/genericErrorResponse.js";
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    const { roomId } = req.path;
+    const { typeId } = req.params;
+    console.log(typeId);
 
     try {
         try {
-            const response = await internalFetcher("room", "GET", `type/${roomId}`)
+            const response = await internalFetcher("room", "GET", `type/${typeId}`)
 
             res.status(200).json(response);
         } catch (e) {

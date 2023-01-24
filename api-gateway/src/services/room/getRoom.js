@@ -7,7 +7,8 @@ import genericErrorResponse from "../../utils/genericErrorResponse.js";
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    const { roomId } = req.path;
+    const { roomId } = req.params;
+    console.log(roomId);
 
     try {
         try {
@@ -15,9 +16,11 @@ export default async (req, res) => {
 
             res.status(200).json(response);
         } catch (e) {
+            console.log(e);
             return genericErrorResponse(res, e, e.status)
         }
     } catch (e) {
+        console.log(e);
         return yupErrorResponse(res, e);
     }
 }

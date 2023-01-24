@@ -10,7 +10,7 @@ import roomTypeValidationSchema from "../../validation/room/roomTypeValidationSc
 export default async (req, res) => {
     try {
         try {
-            const roomType = await roomTypeValidationSchema(req.body);
+            const roomType = await roomTypeValidationSchema.validate(req.body);
 
             const response = await internalFetcher("room", "POST", `type`, {
                 body: {
@@ -20,6 +20,7 @@ export default async (req, res) => {
 
             res.status(200).json(response);
         } catch (e) {
+            console.log(e);
             return genericErrorResponse(res, e, e.status)
         }
     } catch (e) {

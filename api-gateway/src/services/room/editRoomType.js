@@ -8,19 +8,19 @@ import roomTypeEditValidationSchema from "../../validation/room/roomTypeEditVali
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    const { typeId } = req.path;
+    const { typeId } = req.params;
 
     try {
         try {
-            const roomType = await roomTypeEditValidationSchema(req.body);
+            const roomType = await roomTypeEditValidationSchema.validate(req.body);
 
-            const response = await internalFetcher("room", "POST", `type/${typeId}`, {
+            await internalFetcher("room", "PUT", `type/${typeId}`, {
                 body: {
                     ...roomType
                 }
             })
 
-            res.status(200).json(response);
+            res.status(200).send(null);
         } catch (e) {
             return genericErrorResponse(res, e, e.status)
         }

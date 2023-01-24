@@ -1,8 +1,7 @@
-import mongooseErrorResponse from "../../utils/mongooseErrorResponse.js";
-import roomValidationSchema from "../../validation/roomValidationSchema.js";
 import yupErrorResponse from "../../utils/yupErrorResponse.js";
 import internalFetcher from "../../http/internalFetcher.js";
 import genericErrorResponse from "../../utils/genericErrorResponse.js";
+import roomValidationSchema from "../../validation/room/roomValidationSchema.js";
 
 /**
  * @param {e.Request} req
