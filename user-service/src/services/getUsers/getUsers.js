@@ -11,7 +11,6 @@ const userSort = {
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    // todo 403 implementation
     const { offset, limit, roleFilter, sort, email } = req.query;
 
     // Sort
