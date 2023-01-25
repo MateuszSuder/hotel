@@ -7,12 +7,11 @@ import genericErrorResponse from "../../../utils/genericErrorResponse.js";
  */
 export default async (req, res) => {
     const { reservationId, issueId } = req.params;
-    const { message } = req.body;
+    const { message, sender } = req.body;
 
     try {
-        // todo customer / employee implementation
         const messageObject = new Message({
-            sender: "CUSTOMER",
+            sender,
             message,
             dateSent: new Date()
         });

@@ -42,9 +42,9 @@ const addReservationValidationSchema = object({
             if(!/^[0-9]{16}$/.test(value)) return false;
 
             return luhnCheck(value);
-        }),
-        cvv: string().min(3).max(3),
-        validTill: date().min(new Date())
+        }).label("Numer karty"),
+        cvv: string().min(3).max(3).label("CVV"),
+        validTill: date().min(new Date()).label("Data ważności")
     }),
 })
 

@@ -1,11 +1,10 @@
 import express from "express";
 import createReservation from "../../services/createReservation/createReservation.js";
+import getReservations from "../../services/getReservations/getReservations.js";
 
 const router = express.Router();
 
-router.get("", (req, res) => {
-    res.status(501).send(null);
-});
+router.get("", getReservations);
 
 router.post("", createReservation);
 

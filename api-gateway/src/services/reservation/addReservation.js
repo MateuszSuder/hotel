@@ -1,7 +1,7 @@
 import yupErrorResponse from "../../utils/yupErrorResponse.js";
 import internalFetcher from "../../http/internalFetcher.js";
 import genericErrorResponse from "../../utils/genericErrorResponse.js";
-import roomValidationSchema from "../../validation/room/roomValidationSchema.js";
+import addReservationValidationSchema from "../../validation/reservation/addReservationValidationSchema.js";
 
 /**
  * @param {e.Request} req
@@ -11,12 +11,16 @@ export default async (req, res) => {
     const { id } = req.user;
 
     try {
-        const room = await roomValidationSchema.validate(body);
+        const reservation = await addReservationValidationSchema.validate(req.body);
 
         try {
-            const response = await internalFetcher("room", "POST", "", {
+            const response = await internalFetcher("reservation", "POST", "", {
                 body: {
-                    ...room
+                    ...req.body,
+                    reservation: {
+                        ...reservation,
+                        userId: id
+                    },
                 }
             })
 
