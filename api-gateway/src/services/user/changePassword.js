@@ -14,10 +14,10 @@ export default async (req, res) => {
     if(role === "USER" && id !== userId) return genericErrorResponse(res, null, 403);
 
     try {
-        const { actualPassword: currentPassword, newPassword } = await userChangePasswordScheme(req.body);
+        const { actualPassword: currentPassword, newPassword } = await userChangePasswordScheme.validate(req.body);
 
         try {
-            await internalFetcher("user", "PUT", `${id}/changePassword`, {
+            await internalFetcher("user", "PUT", `${id}/change-password`, {
                 body: {
                     currentPassword,
                     newPassword
@@ -26,9 +26,11 @@ export default async (req, res) => {
 
             res.status(200).send(null);
         } catch (e) {
+            console.log(e);
             return genericErrorResponse(res, e, e.status)
         }
     } catch (e) {
+        console.log(e);
         return yupErrorResponse(res, e);
     }
 }

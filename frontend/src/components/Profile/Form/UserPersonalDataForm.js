@@ -26,12 +26,10 @@ const EditPersonalDataForm = () => {
             }),
         {
             onError: (error) => {
-                console.log(error);
                 const message = error.response.data.errors[0];
                 addSnackbar(message, "error");
             },
             onSuccess: () => {
-                console.log("success");
                 refetch();
                 addSnackbar("Dane pomyślnie zmienione", "success");
             },
@@ -39,7 +37,6 @@ const EditPersonalDataForm = () => {
     );
 
     const onSubmit = () => {
-        console.log("submit");
         mutation.mutate();
     }
 

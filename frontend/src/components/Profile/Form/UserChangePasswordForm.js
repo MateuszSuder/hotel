@@ -7,14 +7,40 @@ import {
     IconButton,
     Button,
 } from "@mui/material";
-import { userChangePasswordSchame } from "./../Validation/validationSchemas";
+import { userChangePasswordSchame } from "../Validation/validationSchemas";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
-const onSubmit = () => {
-    console.log("s");
-};
+import {useMutation} from "react-query";
+import axios from "axios";
+import useAuth from "../../../context/AuthProvider";
+import useSnackbar from "../../../context/SnackbarProvider";
 
 const UserChangePasswordForm = () => {
+    const { addSnackbar } = useSnackbar();
+    const { user: { _id}, refetch } = useAuth();
+
+    const mutation = useMutation(
+        () =>
+            axios.put(`/api/user/${_id}/change-password`, {
+                ...formik.values,
+            }),
+        {
+            onError: (error) => {
+                const message = error.response.data.errors[0];
+                addSnackbar(message, "error");
+            },
+            onSuccess: () => {
+                refetch();
+                addSnackbar("Dane pomyślnie zmienione", "success");
+                formik.resetForm();
+            },
+        }
+    );
+
+    const onSubmit = () => {
+        mutation.mutate();
+    }
+
     const formik = useFormik({
         initialValues: {
             actualPassword: "",
@@ -25,11 +51,13 @@ const UserChangePasswordForm = () => {
 
         onSubmit,
     });
+
     const [show, setShow] = useState({
         actualPassword: false,
         newPassword: false,
         confirmNewPassword: false,
     });
+
     return (
         <form onSubmit={formik.handleSubmit} autoComplete="off">
             <Grid container spacing={2}>
@@ -163,7 +191,6 @@ const UserChangePasswordForm = () => {
                     fullWidth
                     variant="contained"
                     type="submit"
-                    onClick={console.log(formik.values)}
                 >
                     Zmień hasło
                 </Button>

@@ -4,6 +4,8 @@ import UserInfo from "../components/Profile/UserInfo";
 import UserReservations from "../components/Profile/UserReservations";
 import PageWithMenu from "../components/PageWithMenu/PageWithMenu";
 import Auth from "../components/Profile/Auth";
+import {Navigate} from "react-router-dom";
+import useAuth from "../context/AuthProvider";
 
 const subPages = [
     {
@@ -27,6 +29,12 @@ const subPages = [
 ];
 
 const Profile = () => {
+    const { user } = useAuth();
+
+    if(!user) return (
+        <Navigate to="/login" />
+    )
+
     return <PageWithMenu subPages={subPages} />;
 };
 

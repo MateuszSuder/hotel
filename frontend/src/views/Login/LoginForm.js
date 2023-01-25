@@ -58,7 +58,6 @@ const LoginForm = () => {
             />
             <Grid
                 container
-                xs={12}
                 spacing={0}
                 direction="column"
                 alignItems="center"
