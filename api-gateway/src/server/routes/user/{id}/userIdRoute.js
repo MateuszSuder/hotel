@@ -4,7 +4,7 @@ import getUser from "../../../../services/user/getUser.js";
 import editUser from "../../../../services/user/editUser.js";
 import deleteUser from "../../../../services/user/deleteUser.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get("/", withAuth({ role: "EMPLOYEE" }), getUser);
 router.put("/", withAuth({ role: "USER" }), editUser);

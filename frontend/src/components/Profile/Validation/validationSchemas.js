@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-const requiredString = "To pole jest wymagane";
+export const requiredString = "To pole jest wymagane";
 const polishLettersString = /^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+$/;
 
 const phoneRules = /^(\d{3})\s(\d{3})\s(\d{3})$/;
@@ -55,7 +55,6 @@ export const editPersonalDataSchema = yup.object({
         apartmentNumber: yup
             .string()
             .max(5, "Numer mieszkania jest za długi")
-            .required(requiredString),
     }),
 });
 

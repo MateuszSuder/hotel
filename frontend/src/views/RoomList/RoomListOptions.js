@@ -64,8 +64,8 @@ const RoomListOptions = () => {
                         renderInput={(params) =>
                             <div style={{position: "relative", display: "inline-block"}}>
                                 <TextField id="date-to" {...params} error={errors.from} />
-                                <IconButton style={{position: "absolute", top: ".5rem", margin: "auto", right: "2rem"}}>
-                                    <ClearIcon onClick={() => setFromDate(null)}/>
+                                <IconButton style={{position: "absolute", top: ".5rem", margin: "auto", right: "2rem"}}  onClick={() => setFromDate(null)}>
+                                    <ClearIcon />
                                 </IconButton>
                             </div>
                         }
@@ -83,8 +83,8 @@ const RoomListOptions = () => {
                         renderInput={(params) =>
                             <div style={{position: "relative", display: "inline-block"}}>
                                 <TextField id="date-to" {...params} error={errors.to} />
-                                <IconButton style={{position: "absolute", top: ".5rem", margin: "auto", right: "2rem"}}>
-                                    <ClearIcon onClick={() => setToDate(null)}/>
+                                <IconButton style={{position: "absolute", top: ".5rem", margin: "auto", right: "2rem"}} onClick={() => setToDate(null)}>
+                                    <ClearIcon />
                                 </IconButton>
                             </div>
                         }

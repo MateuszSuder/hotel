@@ -1,28 +1,50 @@
 import { useFormik, getIn } from "formik";
 import { TextField, Grid, InputAdornment, Button } from "@mui/material";
-import { editPersonalDataSchema } from "./../Validation/validationSchemas";
+import { editPersonalDataSchema } from "../Validation/validationSchemas";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import useAuth from "../../../context/AuthProvider";
 import moment from "moment";
-const onSubmit = () => {
-    console.log("s");
-};
+import { useMutation } from "react-query";
+import axios from "axios";
+import useSnackbar from "../../../context/SnackbarProvider";
+
 const EditPersonalDataForm = () => {
+    const { addSnackbar } = useSnackbar();
+    const {
+        user: { _id, email, name, lastName, dateOfBirth, address, phoneNumber },
+        refetch,
+    } = useAuth();
+
+    const mutation = useMutation(
+        () =>
+            axios.put(`/api/user/${_id}`, {
+                ...formik.values,
+            }),
+        {
+            onError: (error) => {
+                const message = error.response.data.errors[0];
+                addSnackbar(message, "error");
+            },
+            onSuccess: () => {
+                refetch();
+                addSnackbar("Dane pomyślnie zmienione", "success");
+            },
+        }
+    );
+
+    const onSubmit = () => {
+        mutation.mutate();
+    };
+
     const formik = useFormik({
         initialValues: {
-            name: "",
-            lastName: "",
-            dateOfBirth: null,
-            address: {
-                city: "",
-                street: "",
-                postal: "",
-                houseNumber: "",
-                apartmentNumber: "",
-            },
-            phoneNumber: "",
+            name,
+            lastName,
+            dateOfBirth,
+            address,
+            phoneNumber,
         },
         validationSchema: editPersonalDataSchema,
-
         onSubmit,
     });
 
@@ -57,7 +79,7 @@ const EditPersonalDataForm = () => {
                         name="email"
                         id="email"
                         label="Email"
-                        value={"Email"}
+                        value={email}
                         disabled={true}
                     />
                 </Grid>
@@ -244,11 +266,7 @@ const EditPersonalDataForm = () => {
             </Grid>
             <Grid container mt={1} spacing={3} justifyContent="flex-end">
                 <Grid item>
-                    <Button
-                        variant="contained"
-                        type="submit"
-                        onClick={console.log(formik.values)}
-                    >
+                    <Button variant="contained" type="submit">
                         zapisz
                     </Button>
                 </Grid>
