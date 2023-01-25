@@ -3,7 +3,7 @@ import addRoomType from "../../../../services/room/addRoomType.js";
 import getRoomTypes from "../../../../services/room/getRoomTypes.js";
 import withAuth from "../../../../framework/middlewares/withAuth.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get("", getRoomTypes)
 

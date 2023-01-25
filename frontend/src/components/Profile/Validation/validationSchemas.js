@@ -56,7 +56,6 @@ export const editPersonalDataSchema = yup.object({
         apartmentNumber: yup
             .string()
             .max(5, "Numer mieszkania jest za długi")
-            .required(requiredString),
     }),
 });
 

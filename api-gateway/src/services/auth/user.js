@@ -6,8 +6,7 @@ import genericErrorResponse from "../../utils/genericErrorResponse.js";
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    const { id } = req.session.user;
-    console.log(req.session);
+    const { id } = req.user;
 
     try {
         if(!id)

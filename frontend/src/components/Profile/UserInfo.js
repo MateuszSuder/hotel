@@ -3,6 +3,7 @@ import { Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import EditPersonalDataForm from "./Form/UserPersonalDataForm";
 import UserChangePasswordForm from "./Form/UserChangePasswordForm";
+
 const UserInfo = () => {
     return (
         <Grid container spacing={4} pt={3} direction="row">

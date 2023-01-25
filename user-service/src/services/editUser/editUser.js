@@ -7,7 +7,6 @@ import genericErrorResponse from "../../utils/genericErrorResponse.js";
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    // todo 403 implementation
     const { userId } = req.params;
 
     try {
@@ -16,9 +15,9 @@ export default async (req, res) => {
 
             if(!user) return genericErrorResponse(res, "Not found", 404);
 
-            const { name, lastName, dateOfBirth, address } = req.body;
+            const { name, lastName, phoneNumber, dateOfBirth, address } = req.body;
 
-            const newUser = new User(Object.assign(user, {name, lastName, dateOfBirth, address}));
+            const newUser = new User(Object.assign(user, {name, lastName, phoneNumber, dateOfBirth, address}));
             await newUser.save();
             res.status(200).send(null);
         })
