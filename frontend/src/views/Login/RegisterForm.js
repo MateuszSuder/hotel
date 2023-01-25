@@ -17,7 +17,7 @@ import moment from "moment";
 
 import { editPersonalDataSchema } from "./../../components/Profile/Validation/validationSchemas";
 import theme from "./../../components/theme/theme";
-const EditPersonalDataForm = () => {
+const RegisterForm = () => {
     const onSubmit = () => {
         console.log("s");
     };
@@ -419,4 +419,4 @@ const EditPersonalDataForm = () => {
         </>
     );
 };
-export default EditPersonalDataForm;
+export default RegisterForm;
