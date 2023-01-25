@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { Button, Grid, TextField, Typography, IconButton } from "@mui/material";
+import React from "react";
+import { Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import EditPersonalDataForm from "./Form/UserPersonalDataForm";
-import EditIcon from "@mui/icons-material/Edit";
-
+import UserChangePasswordForm from "./Form/UserChangePasswordForm";
 const UserInfo = () => {
     return (
         <Grid container spacing={4} pt={3} direction="row">
@@ -21,7 +20,7 @@ const UserInfo = () => {
                     <EditPersonalDataForm />
                 </Box>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={3}>
                 <Grid item>
                     <Typography variant="h5" pb={3}>
                         Zmiana hasła
@@ -34,7 +33,9 @@ const UserInfo = () => {
                             borderRadius: "5px",
                             border: "0.5px solid grey",
                         }}
-                    />
+                    >
+                        <UserChangePasswordForm />
+                    </Box>
                 </Grid>
             </Grid>
         </Grid>
