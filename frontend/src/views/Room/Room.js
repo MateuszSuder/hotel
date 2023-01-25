@@ -19,7 +19,7 @@ const Room = () => {
     const { user } = useAuth();
     const { roomId } = useParams();
 
-    const {data, isLoading, error} = useQuery("room", () => axios.get(`/api/room/${roomId}`), {
+    const {data, isLoading, error} = useQuery(`room-${roomId}`, () => axios.get(`/api/room/${roomId}`), {
         retry: false,
         refetchOnWindowFocus: false
     });
