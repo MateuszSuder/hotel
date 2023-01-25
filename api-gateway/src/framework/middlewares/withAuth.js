@@ -36,8 +36,6 @@ const withAuth = (options= {
                     }
                 }
 
-                console.log(req.session);
-
                 const user = await internalFetcher("user", "GET", `${decoded.id}`);
 
                 if(user.isBlocked)
@@ -50,6 +48,7 @@ const withAuth = (options= {
                     return genericErrorResponse(res, "Użytkownik nieaktywny", 401);
 
                 req.user = decoded;
+                console.log("end");
             } catch (e) {
                 return genericErrorResponse(res, null, e.status || 500);
             }

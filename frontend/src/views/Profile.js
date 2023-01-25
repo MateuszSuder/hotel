@@ -1,5 +1,5 @@
 import React from "react";
-import { People } from "@mui/icons-material";
+import { People, Security, Bookmarks } from "@mui/icons-material";
 import UserInfo from "../components/Profile/UserInfo";
 import UserReservations from "../components/Profile/UserReservations";
 import PageWithMenu from "../components/PageWithMenu/PageWithMenu";
@@ -16,14 +16,14 @@ const subPages = [
     },
     {
         name: "Rezerwacje",
-        path: "rezerwacje",
-        icon: <People />,
+        path: "reservations",
+        icon: <Bookmarks />,
         component: UserReservations,
     },
     {
-        name: "2fa",
-        path: "autoryzacja",
-        icon: <People />,
+        name: "Autoryzacja",
+        path: "authorization",
+        icon: <Security />,
         component: Auth,
     },
 ];
