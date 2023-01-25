@@ -1,16 +1,57 @@
 import React, { Fragment, useState } from "react";
-import { useFormik } from "formik";
+import {getIn, useFormik} from "formik";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import dayjs from "dayjs";
-import {userReservationRoomSchama} from "../Profile/Validation/validationSchemas";
+import {userReservationRoomSchema} from "../Profile/Validation/validationSchemas";
+import {useMutation} from "react-query";
+import axios from "axios";
+import useSnackbar from "../../context/SnackbarProvider";
+import useAuth from "../../context/AuthProvider";
+import {useNavigate, useParams} from "react-router-dom";
 
-const onSubmit = () => {
-    console.log("s");
-};
 const RoomForm = () => {
+    const { roomId } = useParams();
+    const { addSnackbar } = useSnackbar();
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const mutation = useMutation(
+        (variables) =>
+            axios.post(`/api/reservation`, {
+                ...variables,
+            }),
+        {
+            onError: (error) => {
+                const message = error.response.data.errors[0];
+
+                addSnackbar(message, "error");
+            },
+            onSuccess: () => {
+                addSnackbar("Rezerwacja utworzona pomyślnie!", "success");
+                navigate("/profile/reservations");
+                formik.resetForm();
+            },
+        }
+    );
+
+    const onSubmit = () => {
+        mutation.mutate({
+            reservation: {
+                roomId,
+                startAt: formik.values.fromDate,
+                endAt: formik.values.toDate
+            },
+            paymentData: {
+                cardNumber: formik.values.cardNumber,
+                cvv: formik.values.CVV,
+                validTill: formik.values.validTill
+            }
+        });
+    };
+
     const formik = useFormik({
         initialValues: {
             fromDate: null,
@@ -20,11 +61,17 @@ const RoomForm = () => {
             validTill: "",
             CVV: "",
         },
-        validationSchema: userReservationRoomSchama,
+        validationSchema: userReservationRoomSchema,
         onSubmit,
     });
     const [value, setValue] = useState([null, null]);
+
+    if(!user) {
+        return <></>
+    }
+
     const minDate = dayjs().add(1, "day").toDate();
+
     function getWeeksAfter(date, amount) {
         return date ? date.add(amount, "week") : null;
     }

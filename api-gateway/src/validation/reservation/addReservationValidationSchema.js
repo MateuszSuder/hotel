@@ -44,7 +44,11 @@ const addReservationValidationSchema = object({
             return luhnCheck(value);
         }).label("Numer karty"),
         cvv: string().min(3).max(3).label("CVV"),
-        validTill: date().min(new Date()).label("Data ważności")
+        validTill: string()
+            .matches(
+                /([0-9]{2})\/([0-9]{2})/,
+                "Podaj poprawną datę w formacie: MM/YY"
+            )
     }),
 })
 

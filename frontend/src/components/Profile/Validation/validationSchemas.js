@@ -73,7 +73,7 @@ export const userChangePasswordSchame = yup.object({
         .required(requiredString),
 });
 
-export const userReservationRoomSchama = yup.object({
+export const userReservationRoomSchema = yup.object({
     fromDate: yup
         .date()
         .typeError("Podaj prawidłową datę")
@@ -95,7 +95,6 @@ export const userReservationRoomSchama = yup.object({
         .required("Numer karty jest wymagany"),
     validTill: yup
         .string()
-
         .matches(
             /([0-9]{2})\/([0-9]{2})/,
             "Podaj poprawną datę w formacie: MM/YY"

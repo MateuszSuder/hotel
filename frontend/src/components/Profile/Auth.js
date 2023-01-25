@@ -86,45 +86,46 @@ const Auth = () => {
                         color={user.twoFactorEnabled ? theme.palette.success.main : theme.palette.error.main}>
                 {user.twoFactorEnabled ? "Włączona" : "Wyłączona"}
             </Typography>
-            <Typography variant="body1" pb={3} align="center">
-                Zeskanuj kod QR, a następnie zatwierdź wpisując kod z aplikacji mobilnej w pole tekstowe
-            </Typography>
+
             {
                 !user.twoFactorEnabled && (
                     <>
-                    <Grid item>
-                        <div dangerouslySetInnerHTML={{__html: data.data}}/>
-                    </Grid>
-                    <Grid item>
-                        <form onSubmit={formik.handleSubmit} autoComplete="off">
-                            <Grid container alignItems="center" flexDirection="column" gap={2}>
-                                <Grid item>
-                                    <TextField
-                                        fullWidth
-                                        name="code"
-                                        id="code"
-                                        label="Kod"
-                                        value={formik.values.code}
-                                        error={
-                                            formik.touched.code && Boolean(!!formik.errors.code)
-                                        }
-                                        helperText={formik.touched.code && formik.errors.code}
-                                        onBlur={formik.handleBlur}
-                                        onChange={formik.handleChange}
-                                    />
+                        <Typography variant="body1" pb={3} align="center">
+                            Zeskanuj kod QR, a następnie zatwierdź wpisując kod z aplikacji mobilnej w pole tekstowe
+                        </Typography>
+                        <Grid item>
+                            <div dangerouslySetInnerHTML={{__html: data.data}}/>
+                        </Grid>
+                        <Grid item>
+                            <form onSubmit={formik.handleSubmit} autoComplete="off">
+                                <Grid container alignItems="center" flexDirection="column" gap={2}>
+                                    <Grid item>
+                                        <TextField
+                                            fullWidth
+                                            name="code"
+                                            id="code"
+                                            label="Kod"
+                                            value={formik.values.code}
+                                            error={
+                                                formik.touched.code && Boolean(!!formik.errors.code)
+                                            }
+                                            helperText={formik.touched.code && formik.errors.code}
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            variant="contained"
+                                            type="submit"
+                                        >
+                                            wyślij
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-                                <Grid item>
-                                    <Button
-                                        variant="contained"
-                                        type="submit"
-                                    >
-                                        wyślij
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </form>
-                    </Grid>
-                </>
+                            </form>
+                        </Grid>
+                    </>
                 )
             }
         </Grid>

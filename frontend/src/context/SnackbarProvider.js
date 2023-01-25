@@ -10,6 +10,11 @@ export const SnackbarProvider = ({children}) => {
 
     const addSnackbar = (message, severity) => {
         const id = snackbars.length;
+
+        if(typeof message === 'object') {
+            message = Object.values(message)[0];
+        }
+
         const obj = {
             message,
             severity,

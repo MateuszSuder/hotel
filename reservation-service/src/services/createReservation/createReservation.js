@@ -9,14 +9,13 @@ import RoomType from "../../schemas/RoomType.js";
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    // todo add userId handler
     const userId = "639a28b9b7db31abe703e428";
 
     const { reservation: {
         roomId, startAt, endAt
-    }, paymentData: {
-        cardNumber, CVV, validTill
-    } } = req.body;
+    }} = req.body;
+
+    console.log(req.body);
 
     const now = new Date();
     now.setHours(0, 0, 0, 0)

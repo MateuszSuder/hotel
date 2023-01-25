@@ -10,6 +10,8 @@ import addReservationValidationSchema from "../../validation/reservation/addRese
 export default async (req, res) => {
     const { id } = req.user;
 
+    console.log(req.body);
+
     try {
         const reservation = await addReservationValidationSchema.validate(req.body);
 
@@ -17,10 +19,8 @@ export default async (req, res) => {
             const response = await internalFetcher("reservation", "POST", "", {
                 body: {
                     ...req.body,
-                    reservation: {
-                        ...reservation,
-                        userId: id
-                    },
+                    ...reservation,
+                    userId: id
                 }
             })
 
