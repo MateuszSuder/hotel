@@ -2,6 +2,7 @@ import { useFormik, getIn } from "formik";
 import { TextField, Grid, InputAdornment, Button } from "@mui/material";
 import { editPersonalDataSchema } from "./../Validation/validationSchemas";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import moment from "moment";
 const onSubmit = () => {
     console.log("s");
 };
@@ -121,9 +122,12 @@ const EditPersonalDataForm = () => {
                 </Grid>
                 <Grid item xs={6}>
                     <DesktopDatePicker
+                        disableFuture
                         label="Data urodzenia"
                         inputFormat="DD/MM/YYYY"
                         name="dateOfBirth"
+                        minDate={moment().subtract(100, "years")}
+                        maxDate={moment().subtract(18, "years")}
                         value={formik.values.dateOfBirth}
                         onBlur={formik.handleBlur}
                         onChange={(date) =>
