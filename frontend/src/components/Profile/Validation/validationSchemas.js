@@ -5,6 +5,10 @@ const polishLettersString = /^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+$/;
 
 const phoneRules = /^(\d{3})\s(\d{3})\s(\d{3})$/;
 export const editPersonalDataSchema = yup.object({
+    email: yup
+        .string()
+        .email("Podaj prawidłowy adres email")
+        .required(requiredString),
     name: yup
         .string()
         .matches(polishLettersString, {
@@ -27,6 +31,17 @@ export const editPersonalDataSchema = yup.object({
         .matches(phoneRules, "Podaj poprawny numer telefonu")
         .required(requiredString)
         .trim(),
+    password: yup
+        .string()
+        .required(requiredString)
+        .matches(
+            /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/,
+            "Hasło musi zawierać od 8 do 16 znaków w tym co najmniej 1 dużą i małą literę, co najmniej 1 cyfrę i symbol specjalny nie może też zawierać odstępów"
+        ),
+    confirmPassword: yup
+        .string()
+        .oneOf([yup.ref("password"), null], "Hasła muszą być takie same")
+        .required(requiredString),
     address: yup.object({
         city: yup
             .string()
@@ -52,9 +67,7 @@ export const editPersonalDataSchema = yup.object({
             .string()
             .max(5, "Numer budynku jest za długi")
             .required(requiredString),
-        apartmentNumber: yup
-            .string()
-            .max(5, "Numer mieszkania jest za długi")
+        apartmentNumber: yup.string().max(5, "Numer mieszkania jest za długi"),
     }),
 });
 

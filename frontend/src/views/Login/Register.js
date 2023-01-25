@@ -12,7 +12,11 @@ const Register = () => {
         >
             <Grid item width="40%">
                 <Paper elevation={8}>
-                    <RegisterForm />
+                    <Grid container>
+                        <Grid item xs={12} p={3}>
+                            <RegisterForm />
+                        </Grid>
+                    </Grid>
                 </Paper>
             </Grid>
         </Grid>
