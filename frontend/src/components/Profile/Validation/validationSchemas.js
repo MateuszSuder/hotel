@@ -59,3 +59,18 @@ export const editPersonalDataSchema = yup.object({
             .required(requiredString),
     }),
 });
+
+export const userChangePasswordSchame = yup.object({
+    actualPassword: yup.string().required(requiredString),
+    newPassword: yup
+        .string()
+        .required(requiredString)
+        .matches(
+            /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/,
+            "Hasło musi zawierać od 8 do 16 znaków, dużą oraz małą literę, cyfrę oraz symbol specjalny"
+        ),
+    confirmNewPassword: yup
+        .string()
+        .oneOf([yup.ref("newPassword"), null], "Hasła muszą być takie same")
+        .required(requiredString),
+});

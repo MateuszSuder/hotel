@@ -1,9 +1,6 @@
-import { useState } from "react";
 import { useFormik, getIn } from "formik";
 import { TextField, Grid, InputAdornment, Button } from "@mui/material";
 import { editPersonalDataSchema } from "./../Validation/validationSchemas";
-import InputMask from "react-input-mask";
-import { DatePicker } from "@mui/x-date-pickers";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 const onSubmit = () => {
     console.log("s");
@@ -24,8 +21,7 @@ const EditPersonalDataForm = () => {
             phoneNumber: "",
         },
         validationSchema: editPersonalDataSchema,
-        validateOnChange: true,
-        validateOnBlur: true,
+
         onSubmit,
     });
 
@@ -60,7 +56,6 @@ const EditPersonalDataForm = () => {
                         name="email"
                         id="email"
                         label="Email"
-                        type="string"
                         value={"Email"}
                         disabled={true}
                     />
@@ -71,7 +66,6 @@ const EditPersonalDataForm = () => {
                         name="name"
                         id="name"
                         label="Imię"
-                        type="string"
                         value={formik.values.name}
                         error={
                             formik.touched.name && Boolean(!!formik.errors.name)
@@ -87,7 +81,6 @@ const EditPersonalDataForm = () => {
                         name="lastName"
                         id="lastName"
                         label="Nazwisko"
-                        type="string"
                         value={formik.values.lastName}
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
@@ -106,7 +99,6 @@ const EditPersonalDataForm = () => {
                         name="phoneNumber"
                         id="phoneNumber"
                         label="Numer telefonu"
-                        type="string"
                         value={formik.values.phoneNumber}
                         onChange={handleChange}
                         onBlur={formik.handleBlur}
@@ -152,30 +144,12 @@ const EditPersonalDataForm = () => {
                             />
                         )}
                     />
-
-                    {/* <DatePicker
-                        name="dateOfBirth"
-                        id="dateOfBirth"
-                        label="dateOfBirth"
-                        value={formik.values.dateOfBirth}
-                        onBlur={formik.handleBlur}
-                        onChange={formik.handleChange}
-                        error={
-                            formik.touched.dateOfBirth &&
-                            Boolean(formik.errors.dateOfBirth)
-                        }
-                        helperText={
-                            formik.touched.dateOfBirth &&
-                            formik.errors.dateOfBirth
-                        }
-                    /> */}
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
                         fullWidth
                         name="address.postal"
                         label="Kod pocztowy"
-                        type="string"
                         value={formik.values.address.postal}
                         onBlur={formik.handleBlur}
                         onChange={handleChange}
@@ -194,7 +168,6 @@ const EditPersonalDataForm = () => {
                         fullWidth
                         name="address.city"
                         label="Miasto"
-                        type="string"
                         value={formik.values.address.city}
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
@@ -213,7 +186,6 @@ const EditPersonalDataForm = () => {
                         fullWidth
                         name="address.street"
                         label="Ulica"
-                        type="string"
                         value={formik.values.address.street}
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
@@ -232,7 +204,6 @@ const EditPersonalDataForm = () => {
                         fullWidth
                         name="address.houseNumber"
                         label="Numer budynku"
-                        type="string"
                         value={formik.values.address.houseNumber}
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
@@ -251,7 +222,6 @@ const EditPersonalDataForm = () => {
                         fullWidth
                         name="address.apartmentNumber"
                         label="Numer mieszkania"
-                        type="string"
                         value={formik.values.address.apartmentNumber}
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
