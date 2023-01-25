@@ -1,14 +1,34 @@
 import React, { useState } from "react";
 import { Button, Divider, Grid, TextField, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import theme from "../../components/theme/theme";
+import axios from "axios";
+import {useMutation} from "react-query";
+import useAuth from "../../context/AuthProvider";
+import useSnackbar from "../../context/SnackbarProvider";
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const navigate = useNavigate();
+    const { setUser } = useAuth();
+    const { addSnackbar } = useSnackbar();
+
+    const mutation = useMutation(() => axios.post('/api/auth/login', {email: email, password: password}), {
+        onError: (error) => {
+            const message = error.response.data.errors[0];
+            addSnackbar(message, "error");
+        },
+        onSuccess: (data) => {
+            setUser(data.data);
+            addSnackbar("Zalogowano", "success");
+            navigate("/");
+        }
+    });
+
     const submit = () => {
-        console.log(email, password);
+        mutation.mutate();
     };
 
     return (
