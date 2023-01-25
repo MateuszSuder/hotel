@@ -1,8 +1,8 @@
 import React from "react";
 import { Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import EditPersonalDataForm from "./Form/UserPersonalDataForm";
-import UserChangePasswordForm from "./Form/UserChangePasswordForm";
+import EditPersonalDataForm from "../Form/UserPersonalDataForm";
+import UserChangePasswordForm from "../Form/UserChangePasswordForm";
 
 const UserInfo = () => {
     return (

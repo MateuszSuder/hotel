@@ -20,7 +20,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <SnackbarProvider>
                 <AuthProvider>
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={"pl"}>
                         <BrowserRouter>
                             <Routes>
                                 <Route element={<Layout container={true}/>}>

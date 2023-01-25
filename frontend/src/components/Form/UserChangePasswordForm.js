@@ -7,13 +7,13 @@ import {
     IconButton,
     Button,
 } from "@mui/material";
-import { userChangePasswordSchame } from "../Validation/validationSchemas";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import {useMutation} from "react-query";
 import axios from "axios";
-import useAuth from "../../../context/AuthProvider";
-import useSnackbar from "../../../context/SnackbarProvider";
+import useSnackbar from "../../context/SnackbarProvider";
+import useAuth from "../../context/AuthProvider";
+import {userChangePasswordSchame} from "../Profile/Validation/validationSchemas";
 
 const UserChangePasswordForm = () => {
     const { addSnackbar } = useSnackbar();

@@ -79,7 +79,7 @@ export default async (req, res) => {
             },
         ]);
 
-        return res.status(200).json(t);
+        return res.status(200).json(t[0]);
     } catch (e) {
         return mongooseErrorResponse(res, e);
     }

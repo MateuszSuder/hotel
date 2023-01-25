@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import {
     Card,
     Divider,
@@ -8,15 +8,38 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
-import roomList from "../../mock/roomList";
+import {useQuery} from "react-query";
+import axios from "axios";
+import useSnackbar from "../../context/SnackbarProvider";
+import useAuth from "../../context/AuthProvider";
+import RoomForm from "../../components/Form/RoomReservationForm";
 
-import RoomForm from "./../../components/Profile/Form/RoomReservationForm.js";
 const Room = () => {
-    const [room, setRoom] = useState();
+    const { addSnackbar } = useSnackbar();
+    const { user } = useAuth();
+    const { roomId } = useParams();
+
+    const {data, isLoading, error} = useQuery("room", () => axios.get(`/api/room/${roomId}`), {
+        retry: false,
+        refetchOnWindowFocus: false
+    });
+
+    if(isLoading) {
+        return (
+            <Stack>
+                <Skeleton variant="text" />
+            </Stack>
+        )
+    }
+
+    if(error) {
+        return (
+            <Navigate to={"/"} />
+        )
+    }
     // const [fromDate, setFromDate] = useState(null);
     // const [toDate, setToDate] = useState(null);
     // const [errors, setErrors] = useState({ from: false, to: false });
-    const { roomId } = useParams();
 
     // const filter = () => {
     //     if ((fromDate && !toDate) || (!fromDate && toDate)) {
@@ -51,16 +74,7 @@ const Room = () => {
     //     return date < moment(fromDate).add(1, "days");
     // };
 
-    useEffect(() => {
-        setRoom(roomList.rooms.find((room) => room._id === parseInt(roomId)));
-    }, [roomId, room]);
-
-    if (!room)
-        return (
-            <Stack>
-                <Skeleton variant="text" />
-            </Stack>
-        );
+    const room = data.data[0];
 
     return (
         <Grid container flexDirection="column" my={3}>
@@ -72,7 +86,7 @@ const Room = () => {
 
             <Card elevation={4}>
                 <Grid item container my={2}>
-                    <Grid item my={2}>
+                    <Grid item my={2} xs={12}>
                         <Typography align="center" variant="body1">
                             {room.description}
                         </Typography>
@@ -202,7 +216,7 @@ const Room = () => {
                                 )}
                             />
                         </FormControl>
-                    </Grid> 
+                    </Grid>
                 </Grid> */}
                 <RoomForm />
             </Card>

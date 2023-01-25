@@ -6,6 +6,7 @@ import user from "../../../services/auth/user.js";
 import activate from "../../../services/auth/activate.js";
 import twoFactorQR from "../../../services/auth/twoFactorQR.js";
 import twoFactorEnable from "../../../services/auth/twoFactorEnable.js";
+import logout from "../../../services/auth/logout.js";
 
 const router = express.Router();
 
@@ -20,5 +21,7 @@ router.put("/2fa", withAuth({ role: "USER" }), twoFactorEnable);
 router.post("/login", login);
 
 router.post("/register", register);
+
+router.post("/logout", logout);
 
 export default router;

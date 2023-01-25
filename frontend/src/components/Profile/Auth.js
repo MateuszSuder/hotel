@@ -35,7 +35,7 @@ const Auth = () => {
                 ...formik.values,
             }),
         {
-            onError: (error) => {
+            onError: () => {
                 addSnackbar("Niepoprawny kod", "error");
             },
             onSuccess: () => {

@@ -9,8 +9,6 @@ export default async (req, res) => {
     const { id } = req.user;
     const { code } = req.body;
 
-    console.log(id, code);
-
     try {
         const response = await fetch(`https://www.authenticatorApi.com/Validate.aspx?Pin=${code}&SecretCode=${process.env.AUTHENTICATOR_SECRET}.${id}`);
 

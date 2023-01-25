@@ -1,12 +1,12 @@
 import { useFormik, getIn } from "formik";
 import { TextField, Grid, InputAdornment, Button } from "@mui/material";
-import { editPersonalDataSchema } from "../Validation/validationSchemas";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import useAuth from "../../../context/AuthProvider";
 import moment from "moment";
 import { useMutation } from "react-query";
 import axios from "axios";
-import useSnackbar from "../../../context/SnackbarProvider";
+import useSnackbar from "../../context/SnackbarProvider";
+import useAuth from "../../context/AuthProvider";
+import {editPersonalDataSchema} from "../Profile/Validation/validationSchemas";
 
 const EditPersonalDataForm = () => {
     const { addSnackbar } = useSnackbar();

@@ -14,6 +14,8 @@ import {
 import roomList from "../../mock/roomList";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import {useNavigate} from "react-router-dom";
+import {useQuery} from "react-query";
+import axios from "axios";
 
 const RoomTableRow = ({room, selectRoom}) => {
     return (
@@ -43,14 +45,14 @@ const RoomTableRow = ({room, selectRoom}) => {
 }
 
 const RoomListTable = () => {
-    const [loading, setLoading] = useState(false);
+    const { data, isLoading, error } = useQuery("rooms", () => axios.get(`/api/room`));
     const navigate = useNavigate();
 
     const selectRoom = (roomId) => {
         navigate(`room/${roomId}`);
     }
 
-    if(loading)
+    if(isLoading)
         return (
             <Stack spacing={0.5}>
                 <Skeleton variant={"rounded"} animation={"wave"} height={60} />
@@ -59,13 +61,15 @@ const RoomListTable = () => {
             </Stack>
         )
 
+    const roomList = data.data;
+
     return (
         <>
             <TableContainer component={Paper}>
                 <Table aria-label="Dostępne pokoje">
                     <TableBody>
                         {roomList.rooms.map(room => (
-                            <RoomTableRow room={room} selectRoom={selectRoom} />
+                            <RoomTableRow room={room} selectRoom={selectRoom} key={room._id} />
                         ))}
                     </TableBody>
                 </Table>
