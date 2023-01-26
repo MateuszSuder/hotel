@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sync": "git pull https://github.com/MateuszSuder/eBiblioteka-template.git",
-    "start": "nodemon -L src/index.js"
+    "start:wach": "nodemon -L src/index.js",
+    "start": "node src/index.js"
   },
   "author": "",
   "license": "ISC",

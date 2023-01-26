@@ -8,11 +8,15 @@ import internalFetcher from "../../http/internalFetcher.js";
  */
 export default async (req, res) => {
     const { id } = req.params;
-    const { block } = req.query;
+    const { role } = req.body;
 
     try {
         try {
-            await internalFetcher("user", "POST", `${id}/block?block=${block || 1}`)
+            await internalFetcher("user", "PUT", `${id}/role`, {
+                body: {
+                    role
+                }
+            })
 
             res.status(200).send(null);
         } catch (e) {

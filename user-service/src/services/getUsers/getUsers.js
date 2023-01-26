@@ -28,7 +28,7 @@ export default async (req, res) => {
         }
 
         let query = roleFilter && { role: roleFilter };
-        User.find(query)
+        User.find(query, "-password -__v")
             .sort({ email: s })
             .skip(offset || 0)
             .limit(limit || 10)

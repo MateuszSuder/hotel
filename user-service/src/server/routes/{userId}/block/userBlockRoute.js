@@ -7,11 +7,11 @@ import mongooseErrorResponse from "../../../../utils/mongooseErrorResponse.js";
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    // todo 403 implementation
     const { userId } = req.params;
+    const { block } = req.query;
 
     try {
-        const result = await User.findOneAndUpdate({ _id: userId }, { isBlocked: true });
+        const result = await User.findOneAndUpdate({ _id: userId }, { isBlocked: !!parseInt(block) });
         if(result === null) return genericErrorResponse(res, "Not found", 404);
 
         return res.status(200).send(null);
