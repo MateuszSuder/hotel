@@ -13,6 +13,7 @@ import {QueryClient, QueryClientProvider} from "react-query";
 import {AuthProvider} from "./context/AuthProvider";
 import {SnackbarProvider} from "./context/SnackbarProvider";
 import axios from "axios";
+import {ReactQueryDevtools} from "react-query/devtools";
 
 axios.defaults.baseURL = "http://localhost:4000"
 
@@ -52,9 +53,9 @@ function App() {
                     </LocalizationProvider>
                 </AuthProvider>
             </SnackbarProvider>
+            <ReactQueryDevtools initialIsOpen={false}/>
         </QueryClientProvider>
-    )
-        ;
+    );
 }
 
 export default App;

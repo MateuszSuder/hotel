@@ -20,8 +20,14 @@ export default async (req, res) => {
             return genericErrorResponse(res, "Nieprawidłowe dane", 401);
         }
 
-        if(user.isBlocked || user.isDeleted)
-            return genericErrorResponse(res, null, 401);
+        if(user.isBlocked)
+            return genericErrorResponse(res, "Użytkownik zablokowany", 401);
+
+        if(user.isDeleted)
+            return genericErrorResponse(res, "Użytkownik usunięty", 401);
+
+        if(!user.isActive)
+            return genericErrorResponse(res, "Użytkownik nieaktywny", 401);
 
         const ok = await bcrypt.compare(`${password}.${process.env.PEPPER}`, user.password);
 

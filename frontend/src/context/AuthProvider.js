@@ -14,6 +14,8 @@ export const AuthProvider = ({children}) => {
         refetchOnWindowFocus: false
     });
 
+    console.log(user);
+
     useEffect(() => {
         if(status === "success") {
             setUser(data.data);

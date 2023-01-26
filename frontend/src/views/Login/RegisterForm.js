@@ -18,11 +18,10 @@ import { registerValidationSchema } from "./../../components/Profile/Validation/
 import theme from "./../../components/theme/theme";
 import axios from "axios";
 import useSnackbar from "../../context/SnackbarProvider";
-import useAuth from "../../context/AuthProvider";
 import { useMutation } from "react-query";
+
 const RegisterForm = () => {
     const navigate = useNavigate();
-    const { setUser } = useAuth();
     const { addSnackbar } = useSnackbar();
     const mutation = useMutation(
         () =>
@@ -34,10 +33,9 @@ const RegisterForm = () => {
                 const message = error.response.data.errors[0];
                 addSnackbar(message, "error");
             },
-            onSuccess: (data) => {
-                setUser(data.data);
-                addSnackbar("Zarejestrowano", "success");
-                navigate("/");
+            onSuccess: () => {
+                addSnackbar("Zarejestrowano. Potwierdź swoje konto linkiem, którego otrzymałeś w mailu", "success");
+                navigate("/login");
             },
         }
     );
