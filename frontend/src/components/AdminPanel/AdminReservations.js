@@ -1,10 +1,9 @@
 import React from 'react';
+import UserReservations from "../Profile/UserReservations";
 
 const AdminReservations = () => {
     return (
-        <div>
-            Reservations
-        </div>
+        <UserReservations hideAddIssue={true} />
     );
 };
 
