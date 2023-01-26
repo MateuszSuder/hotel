@@ -17,6 +17,9 @@ export default async (req, res) => {
             return genericErrorResponse(res, null, 403);
         }
 
+        if(reservation.status === "ENDED")
+            return genericErrorResponse(res, "Rezerwacja zakończyła się", 400);
+
         const response = await internalFetcher("reservation", "POST", `${reservationId}/issue/${issueId}`, {
             body: {
                 message,

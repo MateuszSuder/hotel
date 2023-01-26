@@ -90,6 +90,18 @@ const UserReservationIssueView = ({reservationId, issueId, open, setOpen}) => {
         }
     })
 
+    const endIssueMutation = useMutation(() => axios.put(`/api/reservation/${reservationId}/issue/${issueId}`), {
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: [`reservation-${reservationId}-issue-${issueId}`]});
+            await queryClient.invalidateQueries({queryKey: [`reservation-issues-${reservationId}`]});
+            formik.resetForm();
+            addSnackbar("Rezerwacja zakończona", "success");
+        },
+        onError: () => {
+            addSnackbar("Wystąpił błąd podczas zmieny statusu rezerwacji", "error");
+        }
+    })
+
     useEffect(() => {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [data])
@@ -168,10 +180,11 @@ const UserReservationIssueView = ({reservationId, issueId, open, setOpen}) => {
                                                 }
                                                 onBlur={formik.handleBlur}
                                                 onChange={formik.handleChange}
+                                                disabled={issue.status === "RESOLVED"}
                                             />
                                         </Grid>
                                         <Grid item container justifyContent="center" alignItems="center" xs={1}>
-                                            <Button type="submit" variant="contained" sx={{ height: "100%", width: "100%" }}>
+                                            <Button type="submit" variant="contained" sx={{ height: "100%", width: "100%" }} disabled={issue.status === "RESOLVED"}>
                                                 Wyślij
                                             </Button>
                                         </Grid>
@@ -179,6 +192,15 @@ const UserReservationIssueView = ({reservationId, issueId, open, setOpen}) => {
                                 </form>
                             </Grid>
                         </Grid>
+                        {
+                            issue.status === "ONGOING" && (
+                                <Grid item my={1}>
+                                    <Button variant="contained" onClick={() => endIssueMutation.mutate()}>
+                                        Oznacz jako rozwiązany
+                                    </Button>
+                                </Grid>
+                            )
+                        }
                     </Paper>
                 </Grid>
             </Grid>

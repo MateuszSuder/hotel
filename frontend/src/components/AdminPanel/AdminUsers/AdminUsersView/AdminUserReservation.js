@@ -35,6 +35,17 @@ const AdminUserReservation = ({item: reservation}) => {
         }
     })
 
+    const endReservationMutation = useMutation(() => axios.put(`/api/reservation/${reservation._id}`), {
+        onSuccess: async () => {
+            setExpanded(false);
+            addSnackbar("Rezerwacja zakończona", "success");
+            await queryClient.invalidateQueries({queryKey: [`user-${reservation.userId}-reservations`]});
+        },
+        onError: () => {
+            addSnackbar("Nie udało się zakończyć rezerwacji", "error")
+        }
+    })
+
     return (
         <Accordion expanded={expanded}>
             <AccordionSummary
@@ -77,8 +88,13 @@ const AdminUserReservation = ({item: reservation}) => {
                         </Typography>
                         <Divider/>
                     </Grid>
-                    <Grid item>
-                        <FullWidthButton variant="contained" color="error" onClick={() => deleteReservationMutation.mutate()}>Usuń rezerwację</FullWidthButton>
+                    <Grid container item>
+                        <Grid item xs={6}>
+                            <FullWidthButton variant="contained" color="error" onClick={() => deleteReservationMutation.mutate()}>Usuń rezerwację</FullWidthButton>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FullWidthButton variant="contained" color="primary" onClick={() => endReservationMutation.mutate()}>Zakończ rezerwację</FullWidthButton>
+                        </Grid>
                     </Grid>
                 </Grid>
 
