@@ -1,11 +1,7 @@
-import React from 'react';
+import React from "react";
 
 const AdminReservations = () => {
-    return (
-        <div>
-            Reservations
-        </div>
-    );
+    return <div>Reservations</div>;
 };
 
 export default AdminReservations;
