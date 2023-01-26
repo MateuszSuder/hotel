@@ -17,7 +17,7 @@ export default async (req, res) => {
         let reservations = response.reservations;
 
         if(role === "USER" || userId) {
-            reservations = reservations.filter(reservation => reservation.userId === userId || id);
+            reservations = reservations.filter(reservation => reservation.userId === (userId || id));
         }
 
         res.status(200).json({ reservations });

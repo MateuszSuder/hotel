@@ -9,11 +9,9 @@ import RoomType from "../../schemas/RoomType.js";
  * @param {e.Response} res
  */
 export default async (req, res) => {
-    const userId = "639a28b9b7db31abe703e428";
-
     const { reservation: {
         roomId, startAt, endAt
-    }} = req.body;
+    }, userId} = req.body;
 
     console.log(req.body);
 
@@ -38,6 +36,7 @@ export default async (req, res) => {
         );
 
         const reservations = await Reservation.find({
+            roomId,
             startAt: {
                 $lt: endAt
             },

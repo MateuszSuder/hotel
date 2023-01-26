@@ -1,7 +1,5 @@
-import reservationIssueValidationSchema from "../../../validation/reservation/reservationIssueValidationSchema.js";
 import internalFetcher from "../../../http/internalFetcher.js";
 import genericErrorResponse from "../../../utils/genericErrorResponse.js";
-import yupErrorResponse from "../../../utils/yupErrorResponse.js";
 
 /**
  * @param {e.Request} req
@@ -13,7 +11,7 @@ export default async (req, res) => {
     const { id, role } = req.user;
 
     try {
-        const reservation = await internalFetcher("reservation", "GET", `${reservationId}`);
+        const [reservation] = await internalFetcher("reservation", "GET", `${reservationId}`);
 
         if(role === "USER" && reservation.userId !== id) {
             return genericErrorResponse(res, null, 403);

@@ -10,6 +10,8 @@ export default async (req, res) => {
     const { message, sender } = req.body;
 
     try {
+        if(!["CUSTOMER", "EMPLOYEE"].includes(sender)) return genericErrorResponse(res, "Nieprawidłowy nadawca", 400);
+
         const messageObject = new Message({
             sender,
             message,
@@ -23,7 +25,8 @@ export default async (req, res) => {
                 _id: issueId,
                 reservationId
             },
-            { $addToSet: { messages: messageObject } });
+            { $addToSet: { messages: messageObject } },
+            { new: true });
 
         if(!issue)
             return genericErrorResponse(

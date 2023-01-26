@@ -15,7 +15,10 @@ export default async (req, res) => {
         const issue = await reservationIssueValidationSchema.validate(req.body);
 
         try {
-            const reservation = await internalFetcher("reservation", "GET", `${reservationId}`);
+            const [reservation] = await internalFetcher("reservation", "GET", `${reservationId}`);
+
+            console.log(reservation.userId);
+            console.log(id);
 
             if(reservation.userId !== id) {
                 return genericErrorResponse(res, null, 403);
