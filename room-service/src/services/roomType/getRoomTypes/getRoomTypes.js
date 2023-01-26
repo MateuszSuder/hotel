@@ -8,11 +8,14 @@ import RoomType from "../../../schemas/RoomType.js";
 export default async (req, res) => {
     // todo 403 implementation
     try {
-        const roomTypes = await RoomType.find({}, "name capacity price")
+        const roomTypes = await RoomType.find(
+            {},
+            "name capacity price description"
+        );
         return res.status(200).json({
-            roomTypes
-        })
+            roomTypes,
+        });
     } catch (e) {
         return mongooseErrorResponse(res, e);
     }
-}
+};

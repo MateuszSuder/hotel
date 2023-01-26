@@ -197,3 +197,19 @@ export const roomAddSchema = yup.object({
 
     roomTypeId: yup.string().required(requiredString),
 });
+
+export const roomTypeEditSchema = yup.object({
+    name: yup.string().required(requiredString),
+    capacity: yup
+        .number()
+        .positive("Ilość musi być dodatnia")
+        .integer()
+        .required(requiredString)
+        .typeError("Podaj poprawną pojemnośc pokoju"),
+    price: yup
+        .number()
+        .positive("Cena musi być dodatnia")
+        .required(requiredString)
+        .typeError("Podaj poprawną pojemnośc pokoju"),
+    description: yup.string().required(requiredString),
+});
