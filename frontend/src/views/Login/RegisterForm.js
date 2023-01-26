@@ -16,9 +16,33 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import moment from "moment";
 import { registerValidationSchema } from "./../../components/Profile/Validation/validationSchemas";
 import theme from "./../../components/theme/theme";
+import axios from "axios";
+import useSnackbar from "../../context/SnackbarProvider";
+import useAuth from "../../context/AuthProvider";
+import { useMutation } from "react-query";
 const RegisterForm = () => {
+    const navigate = useNavigate();
+    const { setUser } = useAuth();
+    const { addSnackbar } = useSnackbar();
+    const mutation = useMutation(
+        () =>
+            axios.post("/api/auth/register", {
+                ...formik.values,
+            }),
+        {
+            onError: (error) => {
+                const message = error.response.data.errors[0];
+                addSnackbar(message, "error");
+            },
+            onSuccess: (data) => {
+                setUser(data.data);
+                addSnackbar("Zarejestrowano", "success");
+                navigate("/");
+            },
+        }
+    );
     const onSubmit = () => {
-        console.log("s");
+        mutation.mutate();
     };
 
     const formik = useFormik({

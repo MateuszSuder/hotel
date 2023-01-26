@@ -19,8 +19,6 @@ import { loginValidationSchema } from "../../components/Profile/Validation/valid
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 const LoginForm = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [show, setShow] = useState(false);
     const navigate = useNavigate();
     const { setUser } = useAuth();
@@ -29,8 +27,7 @@ const LoginForm = () => {
     const mutation = useMutation(
         () =>
             axios.post("/api/auth/login", {
-                email: formik.values.email,
-                password: formik.values.password,
+                ...formik.values,
             }),
         {
             onError: (error) => {
@@ -61,7 +58,7 @@ const LoginForm = () => {
         <form onSubmit={formik.handleSubmit} autoComplete="off">
             <Grid py={4} px={3} container flexDirection="column" gap={1}>
                 <Grid item py={2} xs={12}>
-                    <Typography variant="h5" align="center" pb={1}>
+                    <Typography variant="h4" align="center" pb={1}>
                         Zaloguj się
                     </Typography>
                     <Divider />
