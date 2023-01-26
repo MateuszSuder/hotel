@@ -183,3 +183,17 @@ export const userReservationRoomSchema = yup.object({
         .min(3, "Podaj poprawny kod CVV")
         .max(3, "Podaj poprawny kod CVV"),
 });
+
+export const roomAddSchema = yup.object({
+    roomNumber: yup
+        .number()
+        .required(requiredString)
+        .typeError("Podaj prawidłowy numer pokoju"),
+
+    floor: yup
+        .number()
+        .required(requiredString)
+        .typeError("Podaj prawidłowy numer piętra"),
+
+    roomTypeId: yup.string().required(requiredString),
+});
