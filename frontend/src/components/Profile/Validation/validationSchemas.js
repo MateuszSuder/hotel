@@ -70,6 +70,19 @@ export const registerValidationSchema = yup.object({
         apartmentNumber: yup.string().max(5, "Numer mieszkania jest za długi"),
     }),
 });
+export const loginValidationSchema = yup.object({
+    email: yup
+        .string()
+        .email("Podaj prawidłowy adres email")
+        .required(requiredString),
+    password: yup
+        .string()
+        .required(requiredString)
+        .matches(
+            /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/,
+            "Hasło musi zawierać od 8 do 16 znaków w tym co najmniej 1 dużą i małą literę, co najmniej 1 cyfrę i symbol specjalny nie może też zawierać odstępów"
+        ),
+});
 export const editPersonalDataSchema = yup.object({
     name: yup
         .string()
