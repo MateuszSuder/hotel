@@ -11,7 +11,10 @@ export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const { data, refetch, status, error } = useQuery("user", () => axios.get("/api/auth/user"), {
         retry: false,
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: true,
+        onError: () => {
+            setUser(null)
+        }
     });
 
     useEffect(() => {

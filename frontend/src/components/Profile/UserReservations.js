@@ -2,7 +2,6 @@ import React, {Fragment, useEffect, useRef, useState} from "react";
 import {
     Grid,
     Typography,
-    Box,
     Skeleton,
     Stack,
     Paper,
@@ -24,6 +23,7 @@ import {useFormik} from "formik";
 import {object, string} from "yup";
 import {requiredString} from "./Validation/validationSchemas";
 import useSnackbar from "../../context/SnackbarProvider";
+import ErrorIcon from '@mui/icons-material/Error';
 
 export const UserReservationStatusChip = ({status}) => {
     switch (status) {
@@ -93,10 +93,6 @@ const UserReservationIssueView = ({reservationId, issueId, open, setOpen}) => {
     useEffect(() => {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [data])
-
-    useEffect(() => {
-        console.log("ref");
-    }, [messageEndRef])
 
     const onSubmit = () => {
         mutation.mutate();
@@ -475,7 +471,16 @@ const UserReservationRow = ({reservation, hideAddIssue}) => {
                     <CustomTooltip content={`${reservation.totalPrice}zł`}/>
                 </TableCell>
                 <TableCell>
-                    <UserReservationStatusChip status={reservation.status}/>
+                    <Grid container alignItems="center" gap={5}>
+                        <UserReservationStatusChip status={reservation.status}/>
+                        {
+                            reservation.ongoing && (
+                                <Tooltip title="Niezakończony problem">
+                                    <ErrorIcon color="error" />
+                                </Tooltip>
+                            )
+                        }
+                    </Grid>
                 </TableCell>
             </TableRow>
             {modal && <UserReservationView open={modal} setOpen={setModal} reservation={reservation} hideAddIssue={hideAddIssue} />}
