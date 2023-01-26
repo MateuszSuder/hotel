@@ -3,6 +3,7 @@ import connectDb from "./config/db.js";
 import express from "express";
 import {setLocale} from "yup";
 import validationErrorMessages from "./validation/validationErrorMessages.js";
+import cors from 'cors';
 
 (async () => {
     connectDb();
@@ -11,7 +12,11 @@ import validationErrorMessages from "./validation/validationErrorMessages.js";
 
     const app = express();
 
-    app.use("/", router);
+    app.use(cors({
+        origin: "http://localhost:3000"
+    }))
+
+    app.use("/api", router);
 
     setLocale({
         ...validationErrorMessages

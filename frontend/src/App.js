@@ -12,6 +12,9 @@ import AdminPanel from "./views/AdminPanel/AdminPanel";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {AuthProvider} from "./context/AuthProvider";
 import {SnackbarProvider} from "./context/SnackbarProvider";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:4000"
 
 const queryClient = new QueryClient()
 

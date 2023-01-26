@@ -1,31 +1,4 @@
 services:
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-    depends_on:
-      - api-gateway
-      - user-service
-      - reservation-service
-      - room-service
-  frontend:
-    container_name: ${FRONTEND_NAME}
-    build:
-      context: ./${FRONTEND_NAME}
-      args:
-        PORT: ${FRONTEND_PORT}
-        NAME: ${FRONTEND_NAME}
-    environment:
-      - PORT=${FRONTEND_PORT}
-      - NAME=${FRONTEND_NAME}
-      - CHOKIDAR_USEPOLLING=true
-    ports:
-      - ${FRONTEND_PORT}:${FRONTEND_PORT}
-    volumes:
-      - ./${FRONTEND_NAME}:/${FRONTEND_NAME}:delegated
-      - /node_modules
   api-gateway:
     container_name: ${GATEWAY_NAME}
     restart: always
