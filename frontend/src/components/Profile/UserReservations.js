@@ -2,7 +2,6 @@ import React, {Fragment, useEffect, useRef, useState} from "react";
 import {
     Grid,
     Typography,
-    Box,
     Skeleton,
     Stack,
     Paper,
@@ -15,7 +14,7 @@ import {
 import useAuth from "../../context/AuthProvider";
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import axios from "axios";
-import {Navigate} from "react-router-dom";
+import {Navigate, useLocation} from "react-router-dom";
 import CustomTooltip from "../CustomTooltip";
 import CustomModal from "../CustomModal";
 import theme from "../theme/theme";
@@ -24,6 +23,7 @@ import {useFormik} from "formik";
 import {object, string} from "yup";
 import {requiredString} from "./Validation/validationSchemas";
 import useSnackbar from "../../context/SnackbarProvider";
+import ErrorIcon from '@mui/icons-material/Error';
 
 export const UserReservationStatusChip = ({status}) => {
     switch (status) {
@@ -59,9 +59,10 @@ const messageSchema = object({
     message: string().required(requiredString).max(250)
 })
 
-const UserReservationIssueView = ({reservationId, issueId, open, setOpen, isCustomer = true}) => {
+const UserReservationIssueView = ({reservationId, issueId, open, setOpen}) => {
     const queryClient = useQueryClient();
     const { addSnackbar } = useSnackbar();
+    const location = useLocation();
     const messageEndRef = useRef(null);
     const {
         data,
@@ -74,6 +75,8 @@ const UserReservationIssueView = ({reservationId, issueId, open, setOpen, isCust
             messageEndRef.current?.scrollIntoView();
         }
     });
+
+    const isCustomer = !location.pathname.includes("admin");
 
     const mutation = useMutation(() => axios.post(`/api/reservation/${reservationId}/issue/${issueId}`, {
         ...formik.values
@@ -90,10 +93,6 @@ const UserReservationIssueView = ({reservationId, issueId, open, setOpen, isCust
     useEffect(() => {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [data])
-
-    useEffect(() => {
-        console.log("ref");
-    }, [messageEndRef])
 
     const onSubmit = () => {
         mutation.mutate();
@@ -265,7 +264,7 @@ const UserReservationViewAddIssue = ({reservationId, open, setOpen}) => {
     }), {
         onSuccess: async () => {
             addSnackbar("Zgłoszono problem", "success");
-            await queryClient.invalidateQueries({queryKey: [`user-${user._id}-reservations`]});
+            await queryClient.resetQueries({queryKey: [`reservation-issues-${reservationId}`]});
             setOpen(false);
         }
     })
@@ -322,7 +321,7 @@ const UserReservationViewAddIssue = ({reservationId, open, setOpen}) => {
     )
 }
 
-const UserReservationView = ({reservation, open, setOpen}) => {
+const UserReservationView = ({reservation, open, setOpen, hideAddIssue}) => {
     const [addIssueModal, setAddIssueModal] = useState(false);
     const roomId = reservation.roomId;
     const {data, isLoading, error} = useQuery(`room-${roomId}`, () => axios.get(`/api/room/${roomId}`), {
@@ -413,6 +412,11 @@ const UserReservationView = ({reservation, open, setOpen}) => {
                 </Grid>
                 <Grid item>
                     <Typography align="center" mt={2}>
+                        Identyfikator użytkownika: {reservation.userId}
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <Typography align="center" mt={2}>
                         {new Date(reservation.startAt).toLocaleDateString()} - {new Date(reservation.endAt).toLocaleDateString()}
                     </Typography>
                 </Grid>
@@ -428,10 +432,12 @@ const UserReservationView = ({reservation, open, setOpen}) => {
                     </Typography>
                 </Grid>
                 <Grid item>
-                    <TypographyLink align="center" variant={"body2"} color={theme.palette.error.main}
-                                    onClick={() => setAddIssueModal(true)}>
-                        zgłoś problem
-                    </TypographyLink>
+                    {!hideAddIssue && (
+                        <TypographyLink align="center" variant={"body2"} color={theme.palette.error.main}
+                                        onClick={() => setAddIssueModal(true)}>
+                            zgłoś problem
+                        </TypographyLink>
+                    )}
                 </Grid>
                 <UserReservationViewIssues reservationId={reservation._id}/>
             </Grid>
@@ -441,7 +447,7 @@ const UserReservationView = ({reservation, open, setOpen}) => {
     )
 }
 
-const UserReservationRow = ({reservation}) => {
+const UserReservationRow = ({reservation, hideAddIssue}) => {
     const [modal, setModal] = useState(false);
 
     const selectReservation = () => {
@@ -465,16 +471,25 @@ const UserReservationRow = ({reservation}) => {
                     <CustomTooltip content={`${reservation.totalPrice}zł`}/>
                 </TableCell>
                 <TableCell>
-                    <UserReservationStatusChip status={reservation.status}/>
+                    <Grid container alignItems="center" gap={5}>
+                        <UserReservationStatusChip status={reservation.status}/>
+                        {
+                            reservation.ongoing && (
+                                <Tooltip title="Niezakończony problem">
+                                    <ErrorIcon color="error" />
+                                </Tooltip>
+                            )
+                        }
+                    </Grid>
                 </TableCell>
             </TableRow>
-            {modal && <UserReservationView open={modal} setOpen={setModal} reservation={reservation}/>}
+            {modal && <UserReservationView open={modal} setOpen={setModal} reservation={reservation} hideAddIssue={hideAddIssue} />}
         </>
     );
 };
 
 
-const UserReservations = () => {
+const UserReservations = ({hideAddIssue = false}) => {
     const {user} = useAuth();
     const {data, isLoading, error} = useQuery(`user-${user._id}-reservations`, () => axios.get(`/api/reservation`));
 
@@ -511,6 +526,7 @@ const UserReservations = () => {
                         <UserReservationRow
                             key={`reservation-${i}`}
                             reservation={reservation}
+                            hideAddIssue={hideAddIssue}
                         />
                     ))}
                 </TableBody>

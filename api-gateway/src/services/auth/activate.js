@@ -18,7 +18,7 @@ export default async (req, res) => {
             try {
                 await internalFetcher("user", "PUT", `/${entry.userId}/activate`);
 
-                return res.redirect("http://localhost/login?activated=true");
+                return res.redirect("http://localhost:3000/login?activated=true");
             } catch (e) {
                 return genericErrorResponse(res, e, e.status);
             }

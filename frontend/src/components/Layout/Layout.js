@@ -14,11 +14,12 @@ const Layout = ({container = true}) => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const {addSnackbar} = useSnackbar();
-    const {user} = useAuth();
+    const {user, setUser} = useAuth();
     const logout = useMutation(() => axios.post("/api/auth/logout"), {
         onSuccess: async () => {
             addSnackbar("Pomyślnie wylogowano", "success");
             await queryClient.invalidateQueries("user");
+            setUser(null);
             navigate("/");
         }
     })

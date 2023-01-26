@@ -9,7 +9,7 @@ import {object, string} from "yup";
 import {requiredString} from "./Validation/validationSchemas";
 import useSnackbar from "../../context/SnackbarProvider";
 
-const twoFactorSchema = object({
+export const twoFactorSchema = object({
     code: string()
         .required(requiredString)
         .min(6, "Kod jest za krótki")

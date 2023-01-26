@@ -37,7 +37,7 @@ export default async (req, res) => {
                             from: "hotel@bsk.com",
                             to: req.body.email,
                             subject: "Aktywuj swoje konto",
-                            text: `Twój link aktywacyjny: http://localhost/api/auth/activate?token=${token}`
+                            text: `Twój link aktywacyjny: http://localhost:4000/api/auth/activate?token=${token}`
                         })
                 } catch(e) {
                     return res.status(500)
