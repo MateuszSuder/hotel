@@ -1,7 +1,5 @@
-import yupErrorResponse from "../../utils/yupErrorResponse.js";
 import internalFetcher from "../../http/internalFetcher.js";
 import genericErrorResponse from "../../utils/genericErrorResponse.js";
-import addReservationValidationSchema from "../../validation/reservation/addReservationValidationSchema.js";
 
 /**
  * @param {e.Request} req

@@ -15,7 +15,8 @@ import {SnackbarProvider} from "./context/SnackbarProvider";
 import axios from "axios";
 import {ReactQueryDevtools} from "react-query/devtools";
 
-axios.defaults.baseURL = "http://localhost:4000"
+axios.defaults.baseURL = "http://localhost:4000";
+axios.defaults.withCredentials = true;
 
 const queryClient = new QueryClient()
 
