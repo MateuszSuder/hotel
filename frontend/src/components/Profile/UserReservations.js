@@ -265,7 +265,7 @@ const UserReservationViewAddIssue = ({reservationId, open, setOpen}) => {
     }), {
         onSuccess: async () => {
             addSnackbar("Zgłoszono problem", "success");
-            await queryClient.invalidateQueries({queryKey: [`user-${user._id}-reservations`]});
+            await queryClient.resetQueries({queryKey: [`reservation-issues-${reservationId}`]});
             setOpen(false);
         }
     })
