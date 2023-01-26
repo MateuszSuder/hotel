@@ -14,8 +14,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import { Link, useNavigate } from "react-router-dom";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import moment from "moment";
-
-import { editPersonalDataSchema } from "./../../components/Profile/Validation/validationSchemas";
+import { registerValidationSchema } from "./../../components/Profile/Validation/validationSchemas";
 import theme from "./../../components/theme/theme";
 const RegisterForm = () => {
     const onSubmit = () => {
@@ -39,7 +38,7 @@ const RegisterForm = () => {
                 apartmentNumber: "",
             },
         },
-        validationSchema: editPersonalDataSchema,
+        validationSchema: registerValidationSchema,
         onSubmit,
     });
 
