@@ -20,6 +20,7 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import AdminUserView from "./AdminUsersView/AdminUserView";
 import AdminUserAction from "./AdminUsersAction/AdminUserAction";
 import theme from "../../theme/theme";
+import useAuth from "../../../context/AuthProvider";
 
 const AdminUsersIcon = ({Icon, tooltip, onClick}) => {
     return (
@@ -51,6 +52,7 @@ export const RoleChip = ({role}) => {
 }
 
 const AdminUsersTableRow = ({user}) => {
+    const { user: loggedUserRole } = useAuth();
     const [userId, setUserId] = useState();
     const [openUser, setOpenUser] = useState(false);
     const [openAction, setOpenAction] = useState(false);
@@ -95,9 +97,16 @@ const AdminUsersTableRow = ({user}) => {
                 </TableCell>
                 <TableCell width="10%">
                     <Grid container alignItems="center">
-                        <AdminUsersIcon Icon={ManageAccountsIcon} tooltip="Zmień rolę użytkownika" onClick={() => openActionModal("MODIFY")} />
-                        <AdminUsersIcon Icon={user.isBlocked ? CheckCircleOutlineOutlinedIcon : BlockIcon} tooltip={user.isBlocked ? "Odblokuj użytkownika" : "Zablokuj użytkownika"} onClick={() => openActionModal("BLOCK")}/>
-                        <AdminUsersIcon Icon={NoAccountsIcon} tooltip="Usuń użytkownika" onClick={() => openActionModal("DELETE")}/>
+                        {
+                            loggedUserRole === "ADMIN" && (
+                                <>
+                                    <AdminUsersIcon Icon={ManageAccountsIcon} tooltip="Zmień rolę użytkownika" onClick={() => openActionModal("MODIFY")} />
+                                    <AdminUsersIcon Icon={user.isBlocked ? CheckCircleOutlineOutlinedIcon : BlockIcon} tooltip={user.isBlocked ? "Odblokuj użytkownika" : "Zablokuj użytkownika"} onClick={() => openActionModal("BLOCK")}/>
+                                    <AdminUsersIcon Icon={NoAccountsIcon} tooltip="Usuń użytkownika" onClick={() => openActionModal("DELETE")}/>
+                                </>
+                            )
+                        }
+
                     </Grid>
                 </TableCell>
             </TableRow>
