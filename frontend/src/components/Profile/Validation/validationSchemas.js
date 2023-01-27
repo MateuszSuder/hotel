@@ -226,12 +226,5 @@ export const roomTypeEditSchema = yup.object({
         .string()
         .matches(/^[0-9]+$/, "W tym polu możesz wpisać tylko liczby")
         .required(requiredString),
-    description: yup
-        .string()
-        .required(requiredString)
-        .matches(
-            polishLettersString,
-            "Podany opis zawiera nieodpowiednie znaki"
-        )
-        .trim(),
+    description: yup.string().required(requiredString).trim(),
 });
