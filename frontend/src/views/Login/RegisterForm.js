@@ -34,7 +34,10 @@ const RegisterForm = () => {
                 addSnackbar(message, "error");
             },
             onSuccess: () => {
-                addSnackbar("Zarejestrowano. Potwierdź swoje konto linkiem, którego otrzymałeś w mailu", "success");
+                addSnackbar(
+                    "Zarejestrowano. Potwierdź swoje konto linkiem, którego otrzymałeś w mailu",
+                    "success"
+                );
                 navigate("/login");
             },
         }
@@ -93,8 +96,8 @@ const RegisterForm = () => {
     return (
         <>
             <form onSubmit={formik.handleSubmit} autoComplete="off">
-                <Grid container spacing={2} justifyContent="center">
-                    <Grid item sx={12}>
+                <Grid container spacing={2}>
+                    <Grid container item justifyContent="center">
                         <Typography variant="h4">Zarejestruj się</Typography>
                     </Grid>
                     <Grid item xs={12}>
