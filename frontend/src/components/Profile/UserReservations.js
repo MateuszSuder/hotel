@@ -95,7 +95,7 @@ const UserReservationIssueView = ({reservationId, issueId, open, setOpen}) => {
             await queryClient.invalidateQueries({queryKey: [`reservation-${reservationId}-issue-${issueId}`]});
             await queryClient.invalidateQueries({queryKey: [`reservation-issues-${reservationId}`]});
             formik.resetForm();
-            addSnackbar("Rezerwacja zakończona", "success");
+            addSnackbar("Problem oznaczony jako zakończony.", "success");
         },
         onError: () => {
             addSnackbar("Wystąpił błąd podczas zmieny statusu rezerwacji", "error");
