@@ -52,7 +52,7 @@ export const RoleChip = ({role}) => {
 }
 
 const AdminUsersTableRow = ({user}) => {
-    const { user: loggedUserRole } = useAuth();
+    const { user: {role} } = useAuth();
     const [userId, setUserId] = useState();
     const [openUser, setOpenUser] = useState(false);
     const [openAction, setOpenAction] = useState(false);
@@ -98,7 +98,7 @@ const AdminUsersTableRow = ({user}) => {
                 <TableCell width="10%">
                     <Grid container alignItems="center">
                         {
-                            loggedUserRole === "ADMIN" && (
+                            role === "ADMIN" && (
                                 <>
                                     <AdminUsersIcon Icon={ManageAccountsIcon} tooltip="Zmień rolę użytkownika" onClick={() => openActionModal("MODIFY")} />
                                     <AdminUsersIcon Icon={user.isBlocked ? CheckCircleOutlineOutlinedIcon : BlockIcon} tooltip={user.isBlocked ? "Odblokuj użytkownika" : "Zablokuj użytkownika"} onClick={() => openActionModal("BLOCK")}/>
