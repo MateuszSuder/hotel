@@ -106,10 +106,13 @@ const RoomTypes = ({ formik }) => {
 
 const AdminAddRoom = ({ setModal, room = null }) => {
     const queryClient = useQueryClient();
+    const { addSnackbar } = useSnackbar();
+
     const onSubmit = () => {
         isEditing ? editMutation.mutate() : addMutation.mutate();
+
     };
-    const { addSnackbar } = useSnackbar();
+
     const formik = useFormik({
         initialValues: {
             roomNumber: room?.roomNumber || "",
@@ -119,7 +122,6 @@ const AdminAddRoom = ({ setModal, room = null }) => {
         validationSchema: roomSchema,
         onSubmit,
     });
-    const isEditing = !!room;
 
     const editMutation = useMutation(
         () =>
@@ -160,6 +162,8 @@ const AdminAddRoom = ({ setModal, room = null }) => {
             },
         }
     );
+
+    const isEditing = !!room;
 
     return (
         <>
@@ -245,6 +249,7 @@ const AdminRooms = () => {
     };
 
     const addRoom = () => {
+        setSelectedRoom(null);
         setOpenModal(true);
     };
 
@@ -261,7 +266,7 @@ const AdminRooms = () => {
                 </AbsoluteFab>
             </Tooltip>
             <CustomModal open={openModal} setOpen={setModal}>
-                <AdminAddRoom setModal={setOpenModal} />
+                <AdminAddRoom setModal={setOpenModal} room={selectedRoom} />
             </CustomModal>
             <RoomList>
                 <AdminRoomsEdit editRoom={editRoom} room={selectedRoom} />
