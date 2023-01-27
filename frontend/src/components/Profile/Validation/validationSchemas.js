@@ -187,7 +187,7 @@ export const userReservationRoomSchema = yup.object({
         .max(3, "Podaj poprawny kod CVV"),
 });
 
-export const roomAddSchema = yup.object({
+export const roomSchema = yup.object({
     roomNumber: yup
         .number()
         .required(requiredString)
