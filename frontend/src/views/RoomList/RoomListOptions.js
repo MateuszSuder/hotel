@@ -21,7 +21,7 @@ const RoomListOptions = () => {
             freeFrom: fromDate || undefined,
             freeTo: toDate || undefined,
             capacity: capacity || 0,
-            sort
+            sort: sort || undefined
         }
         }), {
             onSuccess: (data) => {
