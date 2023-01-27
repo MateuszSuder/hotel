@@ -26,7 +26,7 @@ import AdminAddRoomTypeForm from "./../../components/Form/AdminAddRoomTypeForm";
 
 const AbsoluteFab = styled(Fab)`
     ${({ theme }) => `
-    position: absolute;
+    position: fixed;
     right: 2.5%;
     bottom: 2.5%;
   `}

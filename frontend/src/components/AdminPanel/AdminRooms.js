@@ -32,7 +32,7 @@ import useSnackbar from "../../context/SnackbarProvider";
 import { useMutation } from "react-query";
 const AbsoluteFab = styled(Fab)`
     ${({ theme }) => `
-    position: absolute;
+    position: fixed;
     right: 2.5%;
     bottom: 2.5%;
   `}
@@ -110,7 +110,6 @@ const AdminAddRoom = ({ setModal, room = null }) => {
 
     const onSubmit = () => {
         isEditing ? editMutation.mutate() : addMutation.mutate();
-
     };
 
     const formik = useFormik({
@@ -130,8 +129,11 @@ const AdminAddRoom = ({ setModal, room = null }) => {
             }),
         {
             onError: (error) => {
-                if(error.response.status === 409) {
-                    addSnackbar("Pokój z takim numerem pokoju już istnieje", "error");
+                if (error.response.status === 409) {
+                    addSnackbar(
+                        "Pokój z takim numerem pokoju już istnieje",
+                        "error"
+                    );
                     return;
                 }
                 const message = error.response.data.errors[0];
@@ -162,8 +164,11 @@ const AdminAddRoom = ({ setModal, room = null }) => {
                 setModal(false);
             },
             onError: (err) => {
-                if(err.response.status === 409) {
-                    addSnackbar("Pokój z takim numerem pokoju już istnieje", "error");
+                if (err.response.status === 409) {
+                    addSnackbar(
+                        "Pokój z takim numerem pokoju już istnieje",
+                        "error"
+                    );
                     return;
                 }
                 addSnackbar("Wystąpił błąd podczas dodawania danych.", "error");
