@@ -52,11 +52,12 @@ const RoomTableRow = ({ room, selectRoom, children }) => {
 
 const RoomListTable = ({ children }) => {
     const { rooms, setRooms } = useContext(RoomListContext);
-    const { isLoading } = useQuery("rooms", () =>
-        axios.get(`/api/room`), {
+    const { isLoading } = useQuery("rooms", () => axios.get(`/api/room`),
+        {
             onSuccess: (data) => {
                 setRooms(data.data)
-            }
+            },
+            refetchOnWindowFocus: false
         }
     );
     const navigate = useNavigate();

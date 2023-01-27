@@ -32,7 +32,7 @@ const RoomListOptions = () => {
     );
     const [fromDate, setFromDate] = useState(null);
     const [toDate, setToDate] = useState(null);
-    const [capacity, setCapacity] = useState(2);
+    const [capacity, setCapacity] = useState(1);
     const [sort, setSort] = useState(SORT[0].key)
     const [errors, setErrors] = useState({ from: false, to: false });
 

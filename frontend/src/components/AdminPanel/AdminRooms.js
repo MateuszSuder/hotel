@@ -37,7 +37,7 @@ const AbsoluteFab = styled(Fab)`
 
 const RoomTypes = ({ formik }) => {
     const { isLoading, data, error } = useQuery(
-        "roomTypes",
+        "room-types",
         () => axios.get("/api/room/type/"),
         {
             refetchOnWindowFocus: false,
@@ -100,6 +100,7 @@ const RoomTypes = ({ formik }) => {
         </FormControl>
     );
 };
+
 const AdminAddRoom = ({ setModal, room = null }) => {
     const onSubmit = () => {
         console.log(formik.values);
@@ -114,12 +115,15 @@ const AdminAddRoom = ({ setModal, room = null }) => {
         validationSchema: roomAddSchema,
         onSubmit,
     });
+
+    const isEditing = !!room;
+
     return (
         <>
             <form onSubmit={formik.handleSubmit}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Typography variant="h4">{room ? "Edytuj pokój" : "Dodaj nowy pokój"}</Typography>
+                        <Typography variant="h4">{isEditing ? "Edytuj pokój" : "Dodaj nowy pokój"}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
@@ -167,7 +171,7 @@ const AdminAddRoom = ({ setModal, room = null }) => {
                             type="submit"
                             size="large"
                         >
-                            Dodaj
+                            {isEditing ? "Edytuj" : "Dodaj"}
                         </Button>
                     </Grid>
                 </Grid>

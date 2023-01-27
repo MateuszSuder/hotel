@@ -9,7 +9,7 @@ export const SnackbarProvider = ({children}) => {
     const [snackbars, setSnackbars] = useState([]);
 
     const addSnackbar = (message, severity) => {
-        const id = snackbars.length;
+        const id = snackbars.at(-1) ? snackbars.at(-1).id + 1 : 0;
 
         if(typeof message === 'object') {
             message = Object.values(message)[0];
