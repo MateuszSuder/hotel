@@ -20,7 +20,7 @@ const RoomListOptions = () => {
         params: {
             freeFrom: fromDate || undefined,
             freeTo: toDate || undefined,
-            capacity: capacity || 0,
+            capacity: capacity || 1,
             sort: sort || undefined
         }
         }), {
