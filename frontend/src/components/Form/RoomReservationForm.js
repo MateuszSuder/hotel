@@ -1,9 +1,9 @@
-import React, { Fragment, useState } from "react";
-import {getIn, useFormik} from "formik";
-import { Button, Grid, TextField, Typography } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers-pro";
-import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import React, {Fragment, useState} from "react";
+import {useFormik} from "formik";
+import {Button, Grid, TextField, Typography} from "@mui/material";
+import {LocalizationProvider} from "@mui/x-date-pickers-pro";
+import {AdapterDayjs} from "@mui/x-date-pickers-pro/AdapterDayjs";
+import {DateRangePicker} from "@mui/x-date-pickers-pro/DateRangePicker";
 import dayjs from "dayjs";
 import {userReservationRoomSchema} from "../Profile/Validation/validationSchemas";
 import {useMutation} from "react-query";
@@ -13,9 +13,9 @@ import useAuth from "../../context/AuthProvider";
 import {useNavigate, useParams} from "react-router-dom";
 
 const RoomForm = () => {
-    const { roomId } = useParams();
-    const { addSnackbar } = useSnackbar();
-    const { user } = useAuth();
+    const {roomId} = useParams();
+    const {addSnackbar} = useSnackbar();
+    const {user} = useAuth();
     const navigate = useNavigate();
 
     const mutation = useMutation(
@@ -37,7 +37,8 @@ const RoomForm = () => {
         }
     );
 
-    const onSubmit = () => {
+    const onSubmit = (values) => {
+        console.log(values);
         mutation.mutate({
             reservation: {
                 roomId,
@@ -66,7 +67,7 @@ const RoomForm = () => {
     });
     const [value, setValue] = useState([null, null]);
 
-    if(!user) {
+    if (!user) {
         return <></>
     }
 
@@ -75,6 +76,7 @@ const RoomForm = () => {
     function getWeeksAfter(date, amount) {
         return date ? date.add(amount, "week") : null;
     }
+
     const handleChange = (event) => {
         const value = event.target.value;
         const name = event.target.name;
@@ -118,10 +120,11 @@ const RoomForm = () => {
                             onBlur={formik.handleBlur}
                             onChange={(newValue) => {
                                 setValue(newValue);
-                                formik.setValues({
+                                formik.setValues(prevState => ({
+                                    ...prevState,
                                     fromDate: newValue[0]?.format("YYYY-MM-DD"),
                                     toDate: newValue[1]?.format("YYYY-MM-DD"),
-                                });
+                                }));
                             }}
                             renderInput={(startformik, endformik) => (
                                 <Fragment>
