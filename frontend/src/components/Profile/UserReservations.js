@@ -193,7 +193,7 @@ const UserReservationIssueView = ({reservationId, issueId, open, setOpen}) => {
                             </Grid>
                         </Grid>
                         {
-                            issue.status === "ONGOING" && (
+                            issue.status === "ONGOING" && !isCustomer && (
                                 <Grid item my={1}>
                                     <Button variant="contained" onClick={() => endIssueMutation.mutate()}>
                                         Oznacz jako rozwiązany
