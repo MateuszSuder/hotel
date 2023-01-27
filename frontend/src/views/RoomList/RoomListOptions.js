@@ -117,7 +117,7 @@ const RoomListOptions = () => {
             </Grid>
             <Grid item xs={2}>
                 <FormControl fullWidth>
-                    <TextField type="number" label="Ilość osób" value={capacity}
+                    <TextField type="number" label="Ilość osób" value={capacity} inputProps={{ min: 1, max: 8 }}
                                onChange={e => setCapacity(e.target.value)}/>
                 </FormControl>
             </Grid>
