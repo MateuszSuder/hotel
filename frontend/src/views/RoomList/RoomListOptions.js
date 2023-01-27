@@ -8,7 +8,7 @@ import {useQuery} from "react-query";
 import axios from "axios";
 
 const SORT = [
-    {key: null, value: "Brak"},
+    {key: "", value: "Brak"},
     {key: "priceAsc", value: "Cena rosnąco"},
     {key: "priceDesc", value: "Cena malejąco"}
 ]
@@ -30,8 +30,8 @@ const RoomListOptions = () => {
             enabled: false
         }
     );
-    const [fromDate, setFromDate] = useState(null);
-    const [toDate, setToDate] = useState(null);
+    const [fromDate, setFromDate] = useState(new Date());
+    const [toDate, setToDate] = useState(new Date());
     const [capacity, setCapacity] = useState(1);
     const [sort, setSort] = useState(SORT[0].key)
     const [errors, setErrors] = useState({ from: false, to: false });
