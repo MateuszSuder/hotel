@@ -157,7 +157,11 @@ const AdminAddRoom = ({ setModal, room = null }) => {
                 });
                 setModal(false);
             },
-            onError: () => {
+            onError: (err) => {
+                if(err.response.status === 409) {
+                    addSnackbar("Pokój z takim numerem pokoju już istnieje", "error");
+                    return;
+                }
                 addSnackbar("Wystąpił błąd podczas dodawania danych.", "error");
             },
         }
