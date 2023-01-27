@@ -19,7 +19,7 @@ const subPages = [
 const AdminPanel = () => {
     const { user } = useAuth();
 
-    if(user.role === "USER") {
+    if(!user || user.role === "USER") {
         return (
             <Navigate to="/" />
         )

@@ -1,4 +1,4 @@
-import React, {createContext} from "react";
+import React, {createContext, useContext} from "react";
 import {
     Grid,
     Paper,
@@ -12,9 +12,10 @@ import {
     Typography,
 } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "react-query";
+import {useNavigate} from "react-router-dom";
+import {useQuery} from "react-query";
 import axios from "axios";
+import {RoomListContext} from "./RoomList";
 
 export const RoomContext = createContext({});
 
@@ -50,8 +51,13 @@ const RoomTableRow = ({ room, selectRoom, children }) => {
 };
 
 const RoomListTable = ({ children }) => {
-    const { data, isLoading, error } = useQuery("rooms", () =>
-        axios.get(`/api/room`)
+    const { rooms, setRooms } = useContext(RoomListContext);
+    const { isLoading } = useQuery("rooms", () =>
+        axios.get(`/api/room`), {
+            onSuccess: (data) => {
+                setRooms(data.data)
+            }
+        }
     );
     const navigate = useNavigate();
 
@@ -68,14 +74,16 @@ const RoomListTable = ({ children }) => {
             </Stack>
         );
 
-    const roomList = data.data;
+    if(!rooms?.rooms) return (
+        <></>
+    )
 
     return (
         <>
             <TableContainer component={Paper}>
                 <Table aria-label="Dostępne pokoje">
                     <TableBody>
-                        {roomList.rooms.map((room) => (
+                        {rooms.rooms.map((room) => (
                             <RoomTableRow
                                 room={room}
                                 selectRoom={selectRoom}

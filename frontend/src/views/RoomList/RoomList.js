@@ -1,9 +1,13 @@
-import React from 'react';
+import React, {createContext, useState} from 'react';
 import {Divider, Grid, Typography} from "@mui/material";
 import RoomListTable from "./RoomListTable";
 import RoomListOptions from "./RoomListOptions";
 
-const RoomList = () => {
+export const RoomListContext = createContext({});
+
+const RoomList = ({children}) => {
+    const [rooms, setRooms] = useState([]);
+
     return (
         <>
             <Grid container>
@@ -11,11 +15,15 @@ const RoomList = () => {
                     <Typography letterSpacing={2} fontSize={22}>
                         Dostępne pokoje
                     </Typography>
-                    <Divider />
+                    <Divider/>
                 </Grid>
                 <Grid item xs={12}>
-                    <RoomListOptions />
-                    <RoomListTable />
+                    <RoomListContext.Provider value={{rooms, setRooms}}>
+                        <RoomListOptions/>
+                        <RoomListTable>
+                            {children}
+                        </RoomListTable>
+                    </RoomListContext.Provider>
                 </Grid>
             </Grid>
         </>

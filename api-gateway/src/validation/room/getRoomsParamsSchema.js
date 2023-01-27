@@ -4,10 +4,10 @@ const getRoomsParamsSchema = object({
     limit: number().positive().integer(),
     offset: number().positive().integer(),
     isReserved: mixed().oneOf(['RESERVED', 'FREE', 'ANY']),
-    freeFrom: date().min(new Date()).label("Wolne od"),
-    freeTo: date().label("Wolne do"),
-    capacity: number().integer().positive().label("Pojemność"),
-    sort: mixed().oneOf(['priceAsc', 'priceDesc']),
+    freeFrom: date().nullable().min(new Date()).label("Wolne od"),
+    freeTo: date().nullable().label("Wolne do"),
+    capacity: number().nullable().integer().positive().label("Pojemność"),
+    sort: mixed().nullable().oneOf(['priceAsc', 'priceDesc']),
 })
 
 export default getRoomsParamsSchema;

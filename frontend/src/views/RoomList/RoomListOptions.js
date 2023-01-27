@@ -1,8 +1,11 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {DatePicker} from "@mui/x-date-pickers";
 import {Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
 import moment from "moment/moment";
+import {RoomListContext} from "./RoomList";
+import {useQuery} from "react-query";
+import axios from "axios";
 
 const SORT = [
     {key: null, value: "Brak"},
@@ -12,6 +15,21 @@ const SORT = [
 
 
 const RoomListOptions = () => {
+    const { setRooms } = useContext(RoomListContext);
+    const { refetch } = useQuery("rooms", () => axios.get(`/api/room`, {
+        params: {
+            freeFrom: fromDate || undefined,
+            freeTo: toDate || undefined,
+            capacity: capacity || 0,
+            sort
+        }
+        }), {
+            onSuccess: (data) => {
+                setRooms(data.data)
+            },
+            enabled: false
+        }
+    );
     const [fromDate, setFromDate] = useState(null);
     const [toDate, setToDate] = useState(null);
     const [capacity, setCapacity] = useState(2);
@@ -26,7 +44,7 @@ const RoomListOptions = () => {
 
         if(Object.values(errors).some(v => v)) return;
 
-        console.log()
+        refetch();
     }
 
     const handleSetFromDate = (value) => {

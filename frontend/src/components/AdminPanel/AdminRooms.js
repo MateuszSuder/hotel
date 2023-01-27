@@ -25,6 +25,7 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import theme from "./../theme/theme";
 import EditIcon from '@mui/icons-material/Edit';
+import RoomList from "../../views/RoomList/RoomList";
 
 const AbsoluteFab = styled(Fab)`
     ${({ theme }) => `
@@ -214,16 +215,9 @@ const AdminRooms = () => {
             <CustomModal open={openModal} setOpen={setModal}>
                 <AdminAddRoom setModal={setOpenModal} room={selectedRoom} />
             </CustomModal>
-            <Grid container>
-                <Grid container item xs={8}>
-                    <RoomListOptions />
-                </Grid>
-                <Grid container item xs={12}>
-                    <RoomListTable>
-                        <AdminRoomsEdit editRoom={editRoom} />
-                    </RoomListTable>
-                </Grid>
-            </Grid>
+            <RoomList>
+                <AdminRoomsEdit editRoom={editRoom} />
+            </RoomList>
         </>
     );
 };
