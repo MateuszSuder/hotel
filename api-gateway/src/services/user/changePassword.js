@@ -16,6 +16,8 @@ export default async (req, res) => {
     try {
         const { actualPassword: currentPassword, newPassword } = await userChangePasswordScheme.validate(req.body);
 
+        if(currentPassword === newPassword) return genericErrorResponse(res, "Nowe hasło musi się różnić od poprzedniego", 400);
+
         try {
             await internalFetcher("user", "PUT", `${id}/change-password`, {
                 body: {
