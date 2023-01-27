@@ -1,7 +1,9 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import RoomListOptions from "./../../views/RoomList/RoomListOptions";
-import RoomListTable, {RoomContext} from "./../../views/RoomList/RoomListTable";
+import RoomListTable, {
+    RoomContext,
+} from "./../../views/RoomList/RoomListTable";
 import {
     Grid,
     Tooltip,
@@ -20,13 +22,14 @@ import {
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import CustomModal from "./../CustomModal";
-import { roomAddSchema } from "../Profile/Validation/validationSchemas";
+import { roomSchema } from "../Profile/Validation/validationSchemas";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import theme from "./../theme/theme";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import RoomList from "../../views/RoomList/RoomList";
-
+import useSnackbar from "../../context/SnackbarProvider";
+import { useMutation } from "react-query";
 const AbsoluteFab = styled(Fab)`
     ${({ theme }) => `
     position: absolute;
@@ -85,7 +88,7 @@ const RoomTypes = ({ formik }) => {
                 }
                 error={
                     formik.touched.roomTypeId &&
-                    Boolean(!!formik.errors.roomTypeId)
+                    Boolean(formik.errors.roomTypeId)
                 }
             >
                 {roomTypesList.map((s) => (
@@ -102,28 +105,70 @@ const RoomTypes = ({ formik }) => {
 };
 
 const AdminAddRoom = ({ setModal, room = null }) => {
+    const queryClient = useQueryClient();
     const onSubmit = () => {
-        console.log(formik.values);
+        isEditing ? editMutation.mutate() : addMutation.mutate();
     };
-
+    const { addSnackbar } = useSnackbar();
     const formik = useFormik({
         initialValues: {
             roomNumber: room?.roomNumber || "",
             floor: room?.floor || "",
             roomTypeId: room?.roomTypeId || "",
         },
-        validationSchema: roomAddSchema,
+        validationSchema: roomSchema,
         onSubmit,
     });
-
     const isEditing = !!room;
+
+    const editMutation = useMutation(
+        () =>
+            axios.put(`/api/room/${room._id}`, {
+                ...formik.values,
+            }),
+        {
+            onError: (error) => {
+                const message = error.response.data.errors[0];
+                addSnackbar(message, "error");
+            },
+            onSuccess: async () => {
+                await queryClient.invalidateQueries({
+                    queryKey: ["rooms"],
+                });
+
+                addSnackbar("Dane pomyślnie zmienione", "success");
+
+                setModal(false);
+            },
+        }
+    );
+
+    const addMutation = useMutation(
+        () =>
+            axios.post(`/api/room`, {
+                ...formik.values,
+            }),
+        {
+            onSuccess: async () => {
+                await queryClient.invalidateQueries({
+                    queryKey: ["rooms"],
+                });
+                setModal(false);
+            },
+            onError: () => {
+                addSnackbar("Wystąpił błąd podczas dodawania danych.", "error");
+            },
+        }
+    );
 
     return (
         <>
             <form onSubmit={formik.handleSubmit}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Typography variant="h4">{isEditing ? "Edytuj pokój" : "Dodaj nowy pokój"}</Typography>
+                        <Typography variant="h4">
+                            {isEditing ? "Edytuj pokój" : "Dodaj nowy pokój"}
+                        </Typography>
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
@@ -187,18 +232,17 @@ const AdminRoomsEdit = ({ editRoom }) => {
         <Tooltip title="Edytuj pokój">
             <EditIcon onClick={() => editRoom(room)} />
         </Tooltip>
-    )
-
-}
+    );
+};
 
 const AdminRooms = () => {
     const [openModal, setOpenModal] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState(null);
 
     const setModal = (val) => {
-        if(!val) setSelectedRoom(null);
+        if (!val) setSelectedRoom(null);
         setOpenModal(val);
-    }
+    };
 
     const addRoom = () => {
         setOpenModal(true);
@@ -207,7 +251,7 @@ const AdminRooms = () => {
     const editRoom = (room) => {
         setSelectedRoom(room);
         setOpenModal(true);
-    }
+    };
 
     return (
         <>
@@ -217,10 +261,10 @@ const AdminRooms = () => {
                 </AbsoluteFab>
             </Tooltip>
             <CustomModal open={openModal} setOpen={setModal}>
-                <AdminAddRoom setModal={setOpenModal} room={selectedRoom} />
+                <AdminAddRoom setModal={setOpenModal} />
             </CustomModal>
             <RoomList>
-                <AdminRoomsEdit editRoom={editRoom} />
+                <AdminRoomsEdit editRoom={editRoom} room={selectedRoom} />
             </RoomList>
         </>
     );
