@@ -47,7 +47,10 @@ const withAuth = (options= {
                 if(!user.isActive)
                     return genericErrorResponse(res, "Użytkownik nieaktywny", 401);
 
-                req.user = user;
+                req.user = {
+                    ...user,
+                    id: user._id
+                };
             } catch (e) {
                 return genericErrorResponse(res, null, e.status || 500);
             }
