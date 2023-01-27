@@ -49,14 +49,16 @@ export const registerValidationSchema = yup.object({
                 message: "Miasto zawiera nieodpowiednie znaki",
             })
             .required(requiredString)
-            .max(25, "Nazwa miasta jest za długa"),
+            .max(25, "Nazwa miasta jest za długa")
+            .trim(),
         street: yup
             .string()
             .matches(polishLettersString, {
                 message: "Ulica zawiera nieodpowiednie znaki",
             })
             .max(60, "Nazwa ulicy jest za długa")
-            .required(requiredString),
+            .required(requiredString)
+            .trim(),
         postal: yup
             .string()
             .matches(/^[0-9]{2}-[0-9]{3}/, {
@@ -66,8 +68,12 @@ export const registerValidationSchema = yup.object({
         houseNumber: yup
             .string()
             .max(5, "Numer budynku jest za długi")
-            .required(requiredString),
-        apartmentNumber: yup.string().max(5, "Numer mieszkania jest za długi"),
+            .required(requiredString)
+            .matches(/^[0-9][a-zA-Z0-9]*/, "Podaj poprawny numer budynku"),
+        apartmentNumber: yup
+            .string()
+            .max(5, "Numer mieszkania jest za długi")
+            .matches(/^[0-9][a-zA-Z0-9]*/, "Podaj poprawny numer mieszkania"),
     }),
 });
 export const loginValidationSchema = yup.object({
@@ -89,13 +95,15 @@ export const editPersonalDataSchema = yup.object({
         .matches(polishLettersString, {
             message: "Imię zawiera nieodpowiednie znaki",
         })
-        .required(requiredString),
+        .required(requiredString)
+        .trim(),
     lastName: yup
         .string()
         .matches(polishLettersString, {
             message: "Nazwisko zawiera nieodpowiednie znaki",
         })
-        .required(requiredString),
+        .required(requiredString)
+        .trim(),
     dateOfBirth: yup
         .date()
         .typeError("Podaj prawidłową datę")
@@ -114,7 +122,8 @@ export const editPersonalDataSchema = yup.object({
                 message: "Miasto zawiera nieodpowiednie znaki",
             })
             .required(requiredString)
-            .max(25, "Nazwa miasta jest za długa"),
+            .max(25, "Nazwa miasta jest za długa")
+            .trim(),
         street: yup
             .string()
             .matches(polishLettersString, {
@@ -131,8 +140,14 @@ export const editPersonalDataSchema = yup.object({
         houseNumber: yup
             .string()
             .max(5, "Numer budynku jest za długi")
-            .required(requiredString),
-        apartmentNumber: yup.string().max(5, "Numer mieszkania jest za długi"),
+            .required(requiredString)
+            .trim()
+            .matches(/^[0-9][a-zA-Z0-9]*/, "Podaj poprawny numer budynku"),
+        apartmentNumber: yup
+            .string()
+            .max(5, "Numer mieszkania jest za długi")
+            .trim()
+            .matches(/^[0-9][a-zA-Z0-9]*/, "Podaj poprawny numer mieszkania"),
     }),
 });
 export const userChangePasswordSchame = yup.object({
@@ -161,12 +176,10 @@ export const userReservationRoomSchema = yup.object({
         .required("Data jest wymagana"),
     nameOnCard: yup
         .string()
-        .matches(
-            /^[a-zA-ZąĄćĆęĘłŁńŃóÓśŚżŻźŹ]+$/,
-            "W tym polu możesz wpisywać tylko litery"
-        )
+        .matches(polishLettersString, "W tym polu możesz wpisywać tylko litery")
         .required("Imię i nazwisko jest wymagane")
-        .max(50, "Podałeś zbyt długą ilość znaków"),
+        .max(50, "Podałeś zbyt długą ilość znaków")
+        .trim(),
     cardNumber: yup
         .string()
         .matches(/^[0-9]+$/, "W tym polu możesz wpisać tylko liczby")
@@ -189,15 +202,13 @@ export const userReservationRoomSchema = yup.object({
 
 export const roomSchema = yup.object({
     roomNumber: yup
-        .number()
+        .string()
         .required(requiredString)
-        .typeError("Podaj prawidłowy numer pokoju"),
-
+        .matches(/^[0-9]+$/, "W tym polu możesz wpisać tylko liczby"),
     floor: yup
-        .number()
-        .required(requiredString)
-        .typeError("Podaj prawidłowy numer piętra"),
-
+        .string()
+        .matches(/^[0-9]+$/, "W tym polu możesz wpisać tylko liczby")
+        .required(requiredString),
     roomTypeId: yup.string().required(requiredString),
 });
 
@@ -205,23 +216,22 @@ export const roomTypeEditSchema = yup.object({
     name: yup
         .string()
         .required(requiredString)
-        .matches(polishLettersString, "Nazwa zawiera nieodpowiednie znaki"),
+        .matches(polishLettersString, "Nazwa zawiera nieodpowiednie znaki")
+        .trim(),
     capacity: yup
-        .number()
-        .positive("Ilość musi być dodatnia")
-        .integer()
-        .required(requiredString)
-        .typeError("Podaj poprawną pojemnośc pokoju"),
+        .string()
+        .matches(/^[0-9]+$/, "W tym polu możesz wpisać tylko liczby")
+        .required(requiredString),
     price: yup
-        .number()
-        .positive("Cena musi być dodatnia")
-        .required(requiredString)
-        .typeError("Podaj poprawną pojemnośc pokoju"),
+        .string()
+        .matches(/^[0-9]+$/, "W tym polu możesz wpisać tylko liczby")
+        .required(requiredString),
     description: yup
         .string()
         .required(requiredString)
         .matches(
             polishLettersString,
             "Podany opis zawiera nieodpowiednie znaki"
-        ),
+        )
+        .trim(),
 });
