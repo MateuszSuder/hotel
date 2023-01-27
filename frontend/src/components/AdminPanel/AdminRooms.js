@@ -97,7 +97,7 @@ const RoomTypes = ({ formik }) => {
                     </MenuItem>
                 ))}
             </Select>
-            <FormHelperText error={formik.errors.roomTypeId}>
+            <FormHelperText error={!!formik.errors.roomTypeId}>
                 {formik.touched.roomTypeId && formik.errors.roomTypeId}
             </FormHelperText>
         </FormControl>
