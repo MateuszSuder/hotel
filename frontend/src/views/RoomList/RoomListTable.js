@@ -1,4 +1,4 @@
-import React from "react";
+import React, {createContext} from "react";
 import {
     Grid,
     Paper,
@@ -16,7 +16,9 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
 import axios from "axios";
 
-const RoomTableRow = ({ room, selectRoom }) => {
+export const RoomContext = createContext({});
+
+const RoomTableRow = ({ room, selectRoom, children }) => {
     return (
         <TableRow
             key={room.roomNumber}
@@ -38,11 +40,16 @@ const RoomTableRow = ({ room, selectRoom }) => {
                     <Typography>{room.price} zł / noc</Typography>
                 </Grid>
             </TableCell>
+            <TableCell width="15%" onClick={e => e.stopPropagation()}>
+                <RoomContext.Provider value={room}>
+                    { children }
+                </RoomContext.Provider>
+            </TableCell>
         </TableRow>
     );
 };
 
-const RoomListTable = () => {
+const RoomListTable = ({ children }) => {
     const { data, isLoading, error } = useQuery("rooms", () =>
         axios.get(`/api/room`)
     );
@@ -73,7 +80,9 @@ const RoomListTable = () => {
                                 room={room}
                                 selectRoom={selectRoom}
                                 key={room._id}
-                            />
+                            >
+                                { children }
+                            </RoomTableRow>
                         ))}
                     </TableBody>
                 </Table>

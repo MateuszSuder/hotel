@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { useFormik } from "formik";
 import RoomListOptions from "./../../views/RoomList/RoomListOptions";
-import RoomListTable from "./../../views/RoomList/RoomListTable";
+import RoomListTable, {RoomContext} from "./../../views/RoomList/RoomListTable";
 import {
     Grid,
     Tooltip,
@@ -24,6 +24,8 @@ import { roomAddSchema } from "../Profile/Validation/validationSchemas";
 import axios from "axios";
 import { useQuery } from "react-query";
 import theme from "./../theme/theme";
+import EditIcon from '@mui/icons-material/Edit';
+
 const AbsoluteFab = styled(Fab)`
     ${({ theme }) => `
     position: absolute;
@@ -97,16 +99,16 @@ const RoomTypes = ({ formik }) => {
         </FormControl>
     );
 };
-const AdminAddRoom = ({ setModal }) => {
+const AdminAddRoom = ({ setModal, room = null }) => {
     const onSubmit = () => {
         console.log(formik.values);
     };
 
     const formik = useFormik({
         initialValues: {
-            roomNumber: "",
-            floor: "",
-            roomTypeId: "",
+            roomNumber: room?.roomNumber || "",
+            floor: room?.floor || "",
+            roomTypeId: room?.roomTypeId || "",
         },
         validationSchema: roomAddSchema,
         onSubmit,
@@ -116,7 +118,7 @@ const AdminAddRoom = ({ setModal }) => {
             <form onSubmit={formik.handleSubmit}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Typography variant="h4">Dodaj nowy pokój</Typography>
+                        <Typography variant="h4">{room ? "Edytuj pokój" : "Dodaj nowy pokój"}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
@@ -172,11 +174,36 @@ const AdminAddRoom = ({ setModal }) => {
         </>
     );
 };
+
+const AdminRoomsEdit = ({ editRoom }) => {
+    const room = useContext(RoomContext);
+
+    return (
+        <Tooltip title="Edytuj pokój">
+            <EditIcon onClick={() => editRoom(room)} />
+        </Tooltip>
+    )
+
+}
+
 const AdminRooms = () => {
     const [openModal, setOpenModal] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState(null);
+
+    const setModal = (val) => {
+        if(!val) setSelectedRoom(null);
+        setOpenModal(val);
+    }
+
     const addRoom = () => {
         setOpenModal(true);
     };
+
+    const editRoom = (room) => {
+        setSelectedRoom(room);
+        setOpenModal(true);
+    }
+
     return (
         <>
             <Tooltip title="Dodaj pokój" followCursor>
@@ -184,15 +211,17 @@ const AdminRooms = () => {
                     <Add />
                 </AbsoluteFab>
             </Tooltip>
-            <CustomModal open={openModal} setOpen={setOpenModal}>
-                <AdminAddRoom setModal={setOpenModal} />
+            <CustomModal open={openModal} setOpen={setModal}>
+                <AdminAddRoom setModal={setOpenModal} room={selectedRoom} />
             </CustomModal>
             <Grid container>
                 <Grid container item xs={8}>
                     <RoomListOptions />
                 </Grid>
                 <Grid container item xs={12}>
-                    <RoomListTable />
+                    <RoomListTable>
+                        <AdminRoomsEdit editRoom={editRoom} />
+                    </RoomListTable>
                 </Grid>
             </Grid>
         </>

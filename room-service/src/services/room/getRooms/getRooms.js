@@ -29,6 +29,11 @@ export default async (req, res) => {
                 $unwind: { path: "$roomType" },
             },
             {
+                '$addFields': {
+                    'roomTypeId': '$roomType._id'
+                }
+            },
+            {
                 $unset: "roomType._id",
             },
             {
@@ -37,7 +42,7 @@ export default async (req, res) => {
                 },
             },
             {
-                $unset: ["roomType", "__v"],
+                $unset: ["__v"],
             },
             {
                 $match: { capacity: { $gte: parseInt(capacity || 0) } },

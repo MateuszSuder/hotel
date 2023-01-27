@@ -23,6 +23,10 @@ const RoomListOptions = () => {
             if(!fromDate) setErrors({...errors, from: true});
             if(!toDate) setErrors({...errors, to: true});
         }
+
+        if(Object.values(errors).some(v => v)) return;
+
+        console.log()
     }
 
     const handleSetFromDate = (value) => {
