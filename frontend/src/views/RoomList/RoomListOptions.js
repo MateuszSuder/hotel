@@ -30,8 +30,8 @@ const RoomListOptions = () => {
             enabled: false
         }
     );
-    const [fromDate, setFromDate] = useState(new Date());
-    const [toDate, setToDate] = useState(new Date());
+    const [fromDate, setFromDate] = useState(null);
+    const [toDate, setToDate] = useState(null);
     const [capacity, setCapacity] = useState(1);
     const [sort, setSort] = useState(SORT[0].key)
     const [errors, setErrors] = useState({ from: false, to: false });
@@ -58,17 +58,19 @@ const RoomListOptions = () => {
     }
 
     /**
-     * @param {Date} date
+     * @param {moment.Moment} date
      */
     const disableFromDates = (date) => {
+        if(date.unix() < moment().unix()) return true;
         if(!toDate) return false;
-        return date > moment(toDate).subtract(1, "days");
+        return (date > moment(toDate).subtract(1, "days"));
     }
 
     /**
      * @param {Date} date
      */
     const disableToDates = (date) => {
+        if(date.unix() < moment().unix()) return true;
         if(!fromDate) return false;
         return date < moment(fromDate).add(1, "days");
     }
