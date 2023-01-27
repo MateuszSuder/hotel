@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import {
-    TextField,
     Grid,
     Typography,
     Stack,
     Skeleton,
-    Button,
     styled,
     Fab,
     Tooltip,
+    Divider,
 } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import { Add } from "@mui/icons-material";
@@ -23,7 +22,6 @@ import { useMutation } from "react-query";
 import useSnackbar from "../../context/SnackbarProvider";
 import { roomTypeEditSchema } from "../../components/Profile/Validation/validationSchemas";
 import CustomModal from "./../../components/CustomModal";
-import { roomAddSchema } from "./../../components/Profile/Validation/validationSchemas";
 import AdminAddRoomTypeForm from "./../../components/Form/AdminAddRoomTypeForm";
 
 const AbsoluteFab = styled(Fab)`
@@ -141,8 +139,13 @@ const RoomTypeRow = ({ roomType }) => {
                     </Grid>
                 </Grid>
             </AccordionSummary>
+
+            <Divider />
+
             <AccordionDetails>
-                <AdminAddRoomTypeForm formik={formik} />
+                <Grid item xs={12} mt={3}>
+                    <AdminAddRoomTypeForm formik={formik} />
+                </Grid>
             </AccordionDetails>
         </Accordion>
     );
