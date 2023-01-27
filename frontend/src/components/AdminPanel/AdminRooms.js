@@ -130,6 +130,10 @@ const AdminAddRoom = ({ setModal, room = null }) => {
             }),
         {
             onError: (error) => {
+                if(error.response.status === 409) {
+                    addSnackbar("Pokój z takim numerem pokoju już istnieje", "error");
+                    return;
+                }
                 const message = error.response.data.errors[0];
                 addSnackbar(message, "error");
             },
